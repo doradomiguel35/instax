@@ -1,0 +1,219 @@
+@import url("//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css");
+
+body {
+  margin: 0;
+  background: #fbfbfb;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+#nav-container {
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px solid #e3e3e3;
+  margin-bottom: 70px;
+  background: white;
+}
+
+#navbar {
+  min-width: 500px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 25px 0 25px 0;
+}
+
+#left {
+    float: left;
+    width: 200px;
+    height: 20px;
+}
+
+#center {
+    display: inline-block;
+    margin: 0 auto;
+    min-width: 600px;
+}
+
+#right {
+    float: right;
+    width: 200px;
+    height: 20px;
+}
+
+#input-field {
+  width: 200px;
+  border-radius: 3px;
+  border: 1px solid #cccccc;
+  height: 25px;
+  padding-left: 5px;
+  background-image: url('http://downloadicons.net/sites/default/files/system-of--magnifying-glass-icon-73291.png')
+}
+
+/* ::-webkit-input-placeholder input-field{
+   text-align: center;
+} */
+
+#logo-icon {
+  width: 60px;
+  padding-right: 20px;
+  padding-top: 3px;
+  border-right: 1px solid black;
+  float: left;
+}
+
+#logo-name {
+  float: left;
+  width: 120px;
+  padding-left: 15px;
+}
+
+.nav-icon {
+  float: right;
+  width: 60px;
+  padding: 0 15px 0 15px;
+}
+
+.header {
+  width: 600px;
+  height: 55px;
+  margin: 0 auto;
+  border: 1px solid #efefef;
+  border-radius: 3px 3px 0 0;
+  background: white;
+}
+
+.prf-pic img{
+  float: left;
+  border-radius: 50%;
+  margin: 12px 0 0 12px;
+  width: 30px;
+}
+
+.account-name {
+  font-family: Arial;
+  font-weight: 700;
+  font-size: 14px;
+  float: left;
+  line-height: 55px;
+  margin-left: 10px;
+}
+
+.timestamp {
+  font-family: Arial;
+  color: #a2a2a2;
+  float: right;
+  line-height: 55px;
+  margin-right: 15px;
+}
+
+.img-footer {
+  width: 600px;
+  margin: 0 auto;
+  border: 1px solid #efefef;
+  margin-bottom: 70px;
+  margin-top: 0px;
+  border-radius: 0 0 3px 3px;
+  background: white;
+}
+
+.comments-content {      /*the place where comments show up*/
+  margin: 20px;
+  min-height: 30px;
+  padding-bottom: 15px;
+/*   background: red; */
+  border-bottom: 1px solid #efefef;
+}
+
+.comments-field {      /*styling for the text-box*/
+  margin: 20px;
+/*   background: green; */
+}
+
+.comment-text {
+  width: 600px;
+  margin: 0 auto;
+  border-style: solid;
+  border-color: grey;
+  border-width: 0 1px 0 1px;
+}
+
+.text-box {        /*the place where comments are typed*/
+  width: 600px;
+  border: 10px;
+}
+
+.text-box:focus {
+  outline: none;
+}
+
+
+
+.comment-name {          /*the name that shows up when you write a comment*/
+  font-family: Arial;
+  float: left;
+  margin-right: 5px;
+}
+
+.posted-comment {      /*comment that shows up after you hit enter*/
+  float: left;
+}
+
+.heart-pic img{    /*the small, permanent heart*/
+  width: 20px;
+  float: left;
+}
+
+.like-heart {     /*the heart that occurs when you click*/
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+.main-body {
+  clear: both;
+  width: 700px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0px;
+}
+
+.feed-img {
+  position: relative;
+  display: block;
+  margin: 0 auto;
+  width: 600px;
+  border-style: solid;
+  border-color: #efefef;
+  border-width: 0 1px 0 1px;
+}
+
+#footer {
+  clear: both;
+  width: 1000px;
+  text-align: left;
+  margin: 0 auto;
+  font-family: Arial;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+#footer a {
+  margin-right: 1.2em;
+}
+
+#copyright {
+  float: right;
+}
+
+body, html{
+     height: 100%;
+    background-repeat: no-repeat;
+    background:url(https://i.ytimg.com/vi/4kfXjatgeEU/maxresdefault.jpg);
+    font-family: 'Oxygen', sans-serif;
+        background-size: cover;
+}
+
+
