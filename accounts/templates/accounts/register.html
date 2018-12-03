@@ -11,7 +11,7 @@
 		<link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
 		<link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
 
-		<title>Register</title>
+		<title>Register - Instax</title>
 	</head>
 	<body>
 		<div class="container">
@@ -25,8 +25,8 @@
 								<div class="cols-sm-10">
 									<div class="input-group">
 										<span class="input-group-addon"><i class="fa fa-envelope fa" aria-hidden="true"></i></span>
-										<input type="text" class="form-control" name="fname" id="fname"  placeholder="Enter your First Name"/>
-										{{ forms.first_name }}
+										<!-- <input type="text" class="form-control" name="fname" id="fname"  placeholder="Enter your First Name"/> -->
+										{{ forms.first_name}}
 									</div>
 								</div>
 							</div>
@@ -35,7 +35,8 @@
 								<div class="cols-sm-10">
 									<div class="input-group">
 										<span class="input-group-addon"><i class="fa fa-envelope fa" aria-hidden="true"></i></span>
-										<input type="text" class="form-control" name="lname" id="lname"  placeholder="Enter your Last Name"/>
+										<!-- <input type="text" class="form-control" name="lname" id="lname"  placeholder="Enter your Last Name"/> -->
+										{{ forms.last_name }}
 									</div>
 								</div>
 							</div>
@@ -44,7 +45,9 @@
 								<div class="cols-sm-10">
 									<div class="input-group">
 										<span class="input-group-addon"><i class="fa fa-envelope fa" aria-hidden="true"></i></span>
-										<input type="text" class="form-control" name="email" id="email"  placeholder="Enter your Email"/>
+										<!-- <input type="text" class="form-control" name="email" id="email"  placeholder="Enter your Email"/> -->
+										{{ forms.email_address }}
+										
 									</div>
 								</div>
 							</div>
@@ -54,7 +57,9 @@
 								<div class="cols-sm-10">
 									<div class="input-group">
 										<span class="input-group-addon"><i class="fa fa-users fa" aria-hidden="true"></i></span>
-										<input type="text" class="form-control" name="username" id="username"  placeholder="Enter your Username"/>
+										<!-- <input type="text" class="form-control" name="username" id="username"  placeholder="Enter your Username"/> -->
+										{{ forms.username }}
+										
 									</div>
 								</div>
 							</div>
@@ -64,7 +69,9 @@
 								<div class="cols-sm-10">
 									<div class="input-group">
 										<span class="input-group-addon"><i class="fa fa-users fa" aria-hidden="true"></i></span>
-										<input type="text" class="form-control" name="phone_num" id="phone_num"  placeholder="Enter Phone Number"/>
+										<!-- <input type="text" class="form-control" name="phone_num" id="phone_num"  placeholder="Enter Phone Number"/> -->
+										{{ forms.phone_num}}
+										
 									</div>
 								</div>
 							</div>
@@ -75,7 +82,9 @@
 								<div class="cols-sm-10">
 									<div class="input-group">
 										<span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
-										<input type="password" class="form-control" name="password" id="password"  placeholder="Enter your Password"/>
+										<!-- <input type="password" class="form-control" name="password" id="password"  placeholder="Enter your Password"/> -->
+										{{ forms.password }}
+										
 									</div>
 								</div>
 							</div>
@@ -85,11 +94,16 @@
 								<div class="cols-sm-10">
 									<div class="input-group">
 										<span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
-										<input type="password" class="form-control" name="confirm" id="confirm"  placeholder="Confirm your Password"/>
+										<!-- <input type="password" class="form-control" name="confirm" id="confirm"  placeholder="Confirm your Password"/> -->
+										{{ forms.confirm }}
+									
 									</div>
 								</div>
 							</div>
 							
+							{{ forms.username.errors }}
+							{{ forms.email.errors }}
+							{{ forms.non_field_errors }}
 							<input type="submit" n class="btn btn-primary btn-lg btn-block register-button" value="Register" id="register"> 
 							
 					</form>	
@@ -100,7 +114,7 @@
 			</div>
 		</div>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
     <script src="{% static 'accounts/js/bootstrap.min.js' %}"></script>
 	</body>
 </html>

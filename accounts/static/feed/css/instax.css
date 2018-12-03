@@ -141,11 +141,11 @@ a {
 }
 
 .text-box {        /*the place where comments are typed*/
-  width: 600px;
+  width: 660px;
   border: 10px;
 }
 
-.text-box:focus {
+.text-box:foc us {
   outline: none;
 }
 
@@ -208,12 +208,29 @@ a {
   float: right;
 }
 
+.box {
+  margin: 0 auto;
+  background-color: grey;
+  width: 400px; 
+  height: 400px;
+  padding: 20px;
+}
+
 body, html{
      height: 100%;
     background-repeat: no-repeat;
     background:url(https://i.ytimg.com/vi/4kfXjatgeEU/maxresdefault.jpg);
     font-family: 'Oxygen', sans-serif;
         background-size: cover;
+}
+
+.padding-comments{
+  text-align: left;
+  margin-left: 20px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 1px;
+  padding-right: 1px;
 }
 
 

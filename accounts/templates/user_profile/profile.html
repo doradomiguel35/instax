@@ -31,42 +31,8 @@
 		    </div>
 		  </div>
 		</div>
-		<div class="main-body">
-			{% for feed in feed_data %}
-			<div id="nav-container" style="border-radius: 10px;">
-				<div id="navbar">
-					<div id="left">
-						<a href="#"><img src="{{ feed.username.prof_pic.url}}" style="border-radius: 50%; ;width: 20%; margin-top: -12px;margin-left: -120px"></a>
-						<h4 class="post" style="margin-top: -28px;text-align: left;margin-left: 80px"><a href="#">{{ feed.username.username}}</a></h4>
-					</div><br><br>
-					<div class="padding">
-					<h4 class="caption" style="text-align: justify; margin-left: 5px;">{{feed.caption}}</h4>
-					</div>
 
-					<div id='center'>
-						<img src="{{feed.image.url}}" width="700px" height="500px">
-					</div><br><br>
-					<div id="left">
-						<a href="#"><button style="width: 30%;margin-left: 20px;margin-top: -10px;" class="btn btn-primary btn-lg btn-block register-button">Like</button></a>
-					</div><br><br><br>	
-					{% for comments in comment_data %}
-						{% if comments.post.id == feed.id %}
-						<div class="padding-comments">
-							<span class="comment-user" style="color: black; text-align: left;">
-								{{ comments.username.username }} |
-							</span>
-							<span class="comment">{{ comments.comment }}</span>
-						</div>
-						{% endif %}
-					{% endfor %}
-					<br>
-					<textarea type="text" class="text-box" placeholder="Place comments here." style="margin-left: 2px;border: 1px solid grey;border-radius: 10px;" ></textarea>
-					<button class="btn btn-primary btn-lg btn-block login-button" style="width: 15%; margin-left: 575px;">Comment</button>
-				</div>
-			</div>
-			{% endfor %}
-		</div>
-			
+	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="{% static 'feed/js/bootstrap.min.js' %}"></script>
 	</body>

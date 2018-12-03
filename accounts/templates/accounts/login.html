@@ -10,13 +10,13 @@
 		<link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
 		<link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
 
-		<title>Login</title>
+		<title>Login - Instax</title>
 	</head>
 	<body>
 		<div class="container">
 			<div class="row main">
 				<div class="main-login main-center">
-				<h5>Sign in </h5>
+				<h5>Welcome to Instax!  </h5>
 					<form method="post">	
 						{% csrf_token %}
 						<div class="form-group">
@@ -24,7 +24,8 @@
 							<div class="cols-sm-10">
 								<div class="input-group">
 									<span class="input-group-addon"><i class="fa fa-users fa" aria-hidden="true"></i></span>
-									<input type="text" class="form-control" name="username" id="username"  placeholder="Enter your Username"/>
+									<!-- <input type="text" class="form-control" name="username" id="username"  placeholder="Enter your Username"/> -->
+									{{ forms.username }}
 								</div>
 							</div>
 						</div>
@@ -34,10 +35,13 @@
 							<div class="cols-sm-10">
 								<div class="input-group">
 									<span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
-									<input type="password" class="form-control" name="password" id="password"  placeholder="Enter your Password"/>
+									<!-- <input type="password" class="form-control" name="password" id="password"  placeholder="Enter your Password"/> -->
+									{{ forms.password }}
 								</div>
 							</div>
 						</div>
+						{% block content %}
+							{% endblock %}
 						<input value="Login"class="btn btn-primary btn-lg btn-block login-button" type="submit" id="login">
 					</form>	
 					<div class="form-group ">

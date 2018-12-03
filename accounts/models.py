@@ -11,3 +11,7 @@ class AccountsModel(models.Model):
 	phone_num = models.CharField(max_length=12)
 	followers = models.IntegerField(default=0)
 	prof_pic = models.ImageField(upload_to='prof_pic',blank=True)
+	
+class FollowersModel(models.Model):
+	user = models.ForeignKey(AccountsModel,on_delete=models.CASCADE)
+	follow = models.BooleanField(default=False)

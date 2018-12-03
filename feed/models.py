@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 from accounts.models import AccountsModel
 
+
 class FeedModel(models.Model):
 	username = models.ForeignKey(AccountsModel, on_delete=models.CASCADE)
 	image = models.ImageField(upload_to='insta_pics',blank = True)
@@ -13,4 +14,15 @@ class FeedModel(models.Model):
 
 class CommentModel(models.Model):
 	post = models.ForeignKey(FeedModel,on_delete=models.CASCADE)
+	username = models.ForeignKey(AccountsModel, on_delete=models.CASCADE)
 	comment = models.TextField()
+	commented_at = models.DateTimeField(auto_now_add=True)
+
+
+class LikesModel(models.Model):
+	feed = models.ForeignKey(FeedModel, on_delete=models.CASCADE)
+	username = models.ForeignKey(AccountsModel,on_delete=models.CASCADE)
+	
+
+
+

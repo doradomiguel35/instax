@@ -6,53 +6,53 @@ from .models import AccountsModel
 from django.http import HttpResponse
 from django.contrib.auth import authenticate
 from django.contrib import messages
-from .forms import AccountsForm
+from .forms import RegisterValidation,LoginValidation
+from django import forms
+from feed.models import FeedModel,CommentModel
 
 
 class RegisterView(View):
 	template_name = 'accounts/register.html'
 	context = AccountsModel.objects.all()
-	forms = AccountsForm()
+	feed_data = FeedModel.objects.all()
+	comment_data = CommentModel.objects.all()
+	get_forms = RegisterValidation()
+
 	def get(self, *args, **kwargs):
-	    return render(self.request,self.template_name, {'context_data': self.context,'forms':forms})
+		return render(self.request,self.template_name, {'context_data': self.context,'forms':self.get_forms})
 
-	def post(self, *args, **kwargs):
-		account_form = AccountsModel()
-		if self.request.method == 'POST':
-			if self.request.POST.get('fname') and self.request.POST.get('lname') and self.request.POST.get('email') and self.request.POST.get('username') and self.request.POST.get('password') and self.request.POST.get('phone_num'):
-				account_form.first_name = self.request.POST.get('fname')
-				account_form.last_name = self.request.POST.get('lname')
-				account_form.email_address = self.request.POST.get('email')
-				account_form.username = self.request.POST.get('username')
-				account_form.phone_num = self.request.POST.get('phone_num')
-				account_form.password = self.request.POST.get('password')
+	def post(self,request, *args, **kwargs):
+		form = RegisterValidation(request.POST)
+		if form.is_valid():
+			# form.first_name = request.POST.get('first_name')
+			# form.last_name = request.POST.get('last_name')
+			# form.username = request.POST.get('username')
+			# form.email = request.POST.get('email')
+			# form.phone_number = request.POST.get('phone_number')
+			# form.password = request.POST.get('password')
+			print(form.save())
+			
 
-				for account in self.context:
-					if self.request.POST.get('email') == account.email_address or self.request.POST.get('username') == account.username:
-						return HttpResponse('Email address/Username already exists')
-
-
-				if account_form.password != self.request.POST.get('confirm'):
-					return HttpResponse('Password did not match')
-
-				else:
-					account_form.save()
-					return render(self.request,'feed/users_page.html')
-		else:
-			return HttpResponse('Account Denied')
+			return render(request,'feed/users_page.html',{'context_data': self.context,'feed_data':self.feed_data,'comment_data':self.comment_data,'forms':form})
+		print(form.errors)
+		return render(request,'accounts/register.html',{'context_data': self.context,'forms':form}) 
 
 
 class LoginView(View):
 	template_name = 'accounts/login.html'
 	context = AccountsModel.objects.all()
-		
+	feed_data = FeedModel.objects.all()
+	comment_data = CommentModel.objects.all()
+	get_forms = LoginValidation()
+	
 	def get(self,*args,**kwargs):
-		return render(self.request, self.template_name,{'context_data': self.context})
+		return render(self.request, self.template_name,{'context_data': self.context,'forms':self.get_forms})
 
 	def post(self, *args, **kwargs):
-		if self.request.method == 'POST':
-			if self.request.POST.get('username') and self.request.POST.get('password'):
-				for account in self.context:
-					if self.request.POST.get('username') == account.username and self.request.POST.get('password') == account.password:
-						return render(self.request,'feed/')
-				return HttpResponse('Incorrect password or email!')
+		forms = LoginValidation(self.request.POST)
+		if forms.is_valid():
+			filter_data = AccountsModel.objects.filter(username=self.request.POST.get('username'))	
+			# import pdb; pdb.set_trace()
+
+			return render(self.request,'feed/users_page.html',{'context_data': self.context,'feed_data':self.feed_data,'comment_data':self.comment_data,'forms':forms})
+		return render(self.request, 'accounts/error/error_login.html',{'context': self.context,'error': "Invalid username or password!",'forms':forms })
