@@ -24,17 +24,8 @@ class RegisterView(View):
 	def post(self,request, *args, **kwargs):
 		form = RegisterValidation(request.POST)
 		if form.is_valid():
-			# form.first_name = request.POST.get('first_name')
-			# form.last_name = request.POST.get('last_name')
-			# form.username = request.POST.get('username')
-			# form.email = request.POST.get('email')
-			# form.phone_number = request.POST.get('phone_number')
-			# form.password = request.POST.get('password')
 			print(form.save())
-			
-
 			return render(request,'feed/users_page.html',{'context_data': self.context,'feed_data':self.feed_data,'comment_data':self.comment_data,'forms':form})
-		print(form.errors)
 		return render(request,'accounts/register.html',{'context_data': self.context,'forms':form}) 
 
 

@@ -10,8 +10,9 @@ class AccountsModel(models.Model):
 	password = models.CharField(max_length=50)
 	phone_num = models.CharField(max_length=12)
 	followers = models.IntegerField(default=0)
-	prof_pic = models.ImageField(upload_to='prof_pic',blank=True)
+	prof_pic = models.ImageField(upload_to='prof_pic',blank=True,null=True)
 	
 class FollowersModel(models.Model):
 	user = models.ForeignKey(AccountsModel,on_delete=models.CASCADE)
 	follow = models.BooleanField(default=False)
+

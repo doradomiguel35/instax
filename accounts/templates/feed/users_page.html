@@ -20,13 +20,13 @@
 		<div id='nav-container'>
 		  <div id='navbar'>
 		    <div id='left'>
-		      <a href='#'><img src="{% static 'feed/img/code.png' %}" id='logo-icon'></a>
+		      <a href="{% url 'feeds' %}"><img src="{% static 'feed/img/code.png' %}" id='logo-icon'></a>
 		      <!-- <a href='#'><img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/2000px-Instagram_logo.svg.png' id='logo-name'></a> -->
-		      <a href="#"><h1 class="title" style="margin-top: -5px; margin-right: -30px">𝐼𝓃𝓈𝓉𝒶𝓍</h1></a>
+		      <a href="{% url 'feeds' %}"><h1 class="title" style="margin-top: -5px; margin-right: -30px">𝐼𝓃𝓈𝓉𝒶𝓍</h1></a>
 		    </div>
 		    <div id='center'><input id="input-field" type="text" placeholder='Search' style="text-align: center"></div>
 		    <div id='right'>
-		      <a href='#'><img src='http://freeiconbox.com/icon/256/23228.png' class='nav-icon'></a>
+		      <a href="{% url 'profile' %}"><img src='http://freeiconbox.com/icon/256/23228.png' class='nav-icon'></a>
 		      <a href='#'><img src='http://image.flaticon.com/icons/png/128/126/126471.png' class='nav-icon'></a>
 		    </div>
 		  </div>
@@ -47,7 +47,7 @@
 						<img src="{{feed.image.url}}" width="700px" height="500px">
 					</div><br><br>
 					<div id="left">
-						<a href="#"><button style="width: 30%;margin-left: 20px;margin-top: -10px;" class="btn btn-primary btn-lg btn-block register-button">Like</button></a>
+						<a href="#"><button style="width: 70px;height: 35px;margin-left: 20px;margin-top: -10px;font-size: 15px;text-align: center;" class="btn btn-primary btn-lg btn-block register-button">Like</button></a>
 					</div><br><br><br>	
 					{% for comments in comment_data %}
 						{% if comments.post.id == feed.id %}
@@ -55,13 +55,14 @@
 							<span class="comment-user" style="color: black; text-align: left;">
 								{{ comments.username.username }} |
 							</span>
-							<span class="comment">{{ comments.comment }}</span>
+							<span class="comment">{{ comments.comment }}</span><br>
+							 <h4 style="font-size: 12px;">Commented on: {{ comments.commented_at }}</h4>
 						</div>
 						{% endif %}
 					{% endfor %}
 					<br>
 					<textarea type="text" class="text-box" placeholder="Place comments here." style="margin-left: 2px;border: 1px solid grey;border-radius: 10px;" ></textarea>
-					<button class="btn btn-primary btn-lg btn-block login-button" style="width: 15%; margin-left: 575px;">Comment</button>
+					<button class="btn btn-primary btn-lg btn-block login-button" style="width: 15%; margin-left: 575px; ">Comment</button>
 				</div>
 			</div>
 			{% endfor %}
