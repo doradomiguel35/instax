@@ -5,17 +5,15 @@ from user_profile.models import PicturesUser
 
 class ProfileView(View):
 	template_name = 'user_profile/profile.html'
-
-	account = AccountsModel.objects.filter(username='marvelousfaisan35')
-	pictures = PicturesUser.objects.filter(username_id=account[0].id)
 	followers = FollowersModel.objects.all()
-
-	import pdb;pdb.set_trace()
-
+	
 	def get(self,request,*args,**kwargs):
-		for pic in self.account:
-			try: 
+		username = kwargs.get('username')
+		account = AccountsModel.objects.filter(username=username)
+		pictures = PicturesUser.objects.filter(username_id=account[0].id)
+		for pic in account:
+			try: 	
 				pic.prof_pic.url
-				return render(request,self.template_name,{'account': self.account,'followers':self.followers,'no_prof_pic': False,'pictures':self.pictures})
+				return render(request,self.template_name,{'account': account,'followers':self.followers,'no_prof_pic': False,'pictures':pictures})
 			except:
-				return render(request,self.template_name,{'account': self.account,'followers':self.followers,'no_prof_pic': True,'pictures':self.pictures})				
+				return render(request,self.template_name,{'account': account,'followers':self.followers,'no_prof_pic': True,'pictures':pictures})				

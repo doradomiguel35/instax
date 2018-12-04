@@ -10,10 +10,11 @@ class FeedsView(View):
 	template_name = 'feed/users_page.html'
 	feed_data = FeedModel.objects.all()
 	comment_data = CommentModel.objects.all()
-
+	
 	def get(self, *args, **kwargs):
-
+		import pdb; pdb.set_trace()
 		return render(self.request, self.template_name,
 			{'feed_data': self.feed_data,
 			'comment_data':self.comment_data}
 			)
+

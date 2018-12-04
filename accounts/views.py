@@ -43,7 +43,7 @@ class LoginView(View):
 		forms = LoginValidation(self.request.POST)
 		if forms.is_valid():
 			filter_data = AccountsModel.objects.filter(username=self.request.POST.get('username'))	
-			# import pdb; pdb.set_trace()
+			import pdb; pdb.set_trace()
 
-			return render(self.request,'feed/users_page.html',{'context_data': self.context,'feed_data':self.feed_data,'comment_data':self.comment_data,'forms':forms})
+			return render(self.request,'feed/users_page.html',{'context_data': self.context,'feed_data':self.feed_data,'comment_data':self.comment_data,'forms':forms,'user_data': filter_data})
 		return render(self.request, 'accounts/error/error_login.html',{'context': self.context,'error': "Invalid username or password!",'forms':forms })
