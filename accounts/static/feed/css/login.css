@@ -41,6 +41,13 @@ h4.post {
     padding-left: 10px;
 }
 
+.padding-gallery{
+    padding-top: 10px;
+    padding-right: 200px;
+    padding-bottom: 10px;
+    padding-left: 300px;
+}
+
 .captions {
     font-size: 20px;
     font-weight: 200;

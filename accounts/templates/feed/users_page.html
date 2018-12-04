@@ -35,25 +35,35 @@
 			{% for feed in feed_data %}
 			<div id="nav-container" style="border-radius: 10px;">
 				<div id="navbar">
+					{% if feed.username.prof_pic %}
+
 					<div id="left">
 						<a href="#"><img src="{{ feed.username.prof_pic.url}}" style="border-radius: 50%; ;width: 20%; margin-top: -12px;margin-left: -120px"></a>
 						<h4 class="post" style="margin-top: -28px;text-align: left;margin-left: 80px"><a href="#">{{ feed.username.username}}</a></h4>
 					</div><br><br>
+					{% else %}
+					<div id="left">
+						<a href="#"><img src="{% static 'user_profile/img/blank_picture.png' %}" style="border-radius: 50%; ;width: 20%; margin-top: -12px;margin-left: -120px"></a>
+						<h4 class="post" style="margin-top: -28px;text-align: left;margin-left: 80px"><a href="#">{{ feed.username.username}}</a></h4>
+					</div><br><br>
+					{% endif %}
 					<div class="padding">
 					<h4 class="caption" style="text-align: justify; margin-left: 5px;">{{feed.caption}}</h4>
 					</div>
 
 					<div id='center'>
-						<img src="{{feed.image.url}}" width="700px" height="500px">
+						<a href="#"><img src="{{feed.images.image.url}}" width="700px" height="500px"></a>
 					</div><br><br>
 					<div id="left">
-						<a href="#"><button style="width: 70px;height: 35px;margin-left: 20px;margin-top: -10px;font-size: 15px;text-align: center;" class="btn btn-primary btn-lg btn-block register-button">Like</button></a>
-					</div><br><br><br>	
+						<a href="#"><button style="width: 70px;height: 35px;margin-left: 20px;margin-top: -10px;font-size: 15px;text-align: center;" class="btn btn-primary btn-lg btn-block register-button">Like</button>
+						</a>
+						<h4 class="post" style="text-align: left;margin-left: 20px;">{{ feed.likes }} Likes</h4>
+					</div><br><br><br><br>
 					{% for comments in comment_data %}
 						{% if comments.post.id == feed.id %}
 						<div class="padding-comments">
 							<span class="comment-user" style="color: black; text-align: left;">
-								{{ comments.username.username }} |
+								<a href="#" style="color: black;">{{ comments.username.username }}</a> |
 							</span>
 							<span class="comment">{{ comments.comment }}</span><br>
 							 <h4 style="font-size: 12px;">Commented on: {{ comments.commented_at }}</h4>
