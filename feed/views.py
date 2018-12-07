@@ -35,10 +35,8 @@ class FeedsView(TemplateView):
 			comment.post_id = feed.id
 			comment.username_id = account.id 
 			comment.save()
-			comment_instance = CommentModel.objects.get(id=comment.id)
-			serializer = CommentSerialize(comment_instance)
-			import pdb; pdb.set_trace()
-		return JsonResponse(serializer.data, safe=False)
+			serializer = CommentSerialize(CommentModel.objects.get(id=comment.id))
+			return JsonResponse(serializer.data, safe=False)
 
 
 class FeedUser(TemplateView):

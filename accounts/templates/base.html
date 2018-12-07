@@ -87,24 +87,24 @@
 			
 			{% endfor %}
 		</div>
-	
-
-		
-		<script>
-			$('#create-comment').click(function()){
-				console.log('click')
-				// var comment = $('#create-comment-field').val();
-				// $.ajax({
-				// 	url: 'comment/feed.id/user_data.username',
-				// 	data: {'comment': comment},
-				// 	success: function(comments){
-				// 		alert(comments.comment)
-				// 	}
-				// })
-			}
-		</script>
 		{% endblock content %}
-	
+		
+		{% block ajax %}
+		<script>
+			$('#create-comment').click(function(){
+				console.log('click')
+				var comment = $('#create-comment-field').val();
+				$.ajax({
+					url: 'http://localhost:8000/feeds/comment/feed.id/user_data.username',
+					method: 'POST'
+					data: {'comment': comment},
+					success: function(comments){
+						alert(comments.comment)
+					}
+				});
+			});
+		</script>
+		{% endblock ajax %}	
 	</body>
 		
 </html>
