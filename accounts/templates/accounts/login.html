@@ -1,4 +1,5 @@
 {% load static %}
+{% load widget_tweaks %}
 <!DOCTYPE html>
 <html lang="en">
     <head> 
@@ -25,7 +26,7 @@
 								<div class="input-group">
 									<span class="input-group-addon"><i class="fa fa-users fa" aria-hidden="true"></i></span>
 									<!-- <input type="text" class="form-control" name="username" id="username"  placeholder="Enter your Username"/> -->
-									{{ forms.username }}
+									{{ forms.username|add_class:"form-control" }}
 								</div>
 							</div>
 						</div>
@@ -36,7 +37,7 @@
 								<div class="input-group">
 									<span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
 									<!-- <input type="password" class="form-control" name="password" id="password"  placeholder="Enter your Password"/> -->
-									{{ forms.password }}
+									{{ forms.password|add_class:"form-control"}}
 								</div>
 							</div>
 						</div>
@@ -45,7 +46,7 @@
 						<input value="Login"class="btn btn-primary btn-lg btn-block login-button" type="submit" id="login">
 					</form>	
 					<div class="form-group ">
-						<a href="{% url 'register' %}" type="button" id="button" class="btn btn-primary btn-lg btn-block login-button">Sign Up</a>
+						<a href="{% url 'accounts:register' %}" type="button" id="button" class="btn btn-primary btn-lg btn-block login-button">Sign Up</a>
 					</div>
 			
 				</div>

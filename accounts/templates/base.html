@@ -1,0 +1,110 @@
+{% load static %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en">
+    <head> 
+		<link rel="icon" href="{% static 'feed/img/code.png' %}">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="{% static 'feed/css/bootstrap.min.css' %}" rel="stylesheet">
+		<link rel="stylesheet" href="{% static 'feed/css/login.css' %}">
+		<link rel="stylesheet" href="{% static 'feed/css/instax.css' %}">
+		<link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    	<script src="{% static 'feed/js/bootstrap.min.js' %}"></script>
+		{% block title %}
+		<title>Posts - Instax</title>
+		{% endblock title %}
+	</head>
+	<body>
+		<div id='nav-container'>
+		  <div id='navbar'>
+		    <div id='left'>
+			    <a href="#"><img src="{% static 'feed/img/code.png' %}" id='logo-icon'></a>
+			    {% block feed_url %}
+			    <a href="{% url 'feeds:feeds' user_data.username  %}"><h1 class="title" style="margin-top: -5px; margin-right: -30px">𝐼𝓃𝓈𝓉𝒶𝓍</h1></a>
+				{% endblock feed_url %}
+			</div>
+		    <div id='center'>
+		    	<input id="input-field" type="text" placeholder='Search' style="text-align: center">
+		    </div>
+		    <div id='right'>
+		      {% block profile_url %}
+		      <a href="{% url 'profile:profile' user_data.username %}"><img src='http://freeiconbox.com/icon/256/23228.png' class='nav-icon'></a>
+		      {% endblock profile_url %}
+		    </div>
+		  </div>
+		</div>
+		{% block content %}
+		<div class="main-body">
+
+			{% for feed in feed_data %}
+			<div id="nav-container" style="border-radius: 10px;">
+				<div id="navbar">
+					{% if feed.username.prof_pic %}
+					<div id="left">
+						<a href="{% url 'feeds:feeds_profile' user_data.username feed.username.username%}"><img src="{{ feed.username.prof_pic.url}}" style="border-radius: 50%; ;width: 20%; margin-top: -12px;margin-left: -120px"></a>
+						<h4 class="post" style="margin-top: -28px;text-align: left;margin-left: 80px"><a href="{% url 'feeds:feeds_profile' user_data.username feed.username.username%}">{{ feed.username.username}}</a></h4>
+					</div><br><br>
+					{% else %}
+					<div id="left">
+						<a href="{% url 'feeds:feeds_profile' user_data.username feed.username.username%}"><img src="{% static 'user_profile/img/blank_picture.png' %}" style="border-radius: 50%; ;width: 20%; margin-top: -12px;margin-left: -120px"></a>
+						<h4 class="post" style="margin-top: -28px;text-align: left;margin-left: 80px"><a href="{% url 'feeds:feeds_profile' user_data.username feed.username.username%}">{{ feed.username.username}}</a></h4>
+					</div><br><br>
+					{% endif %}
+					<div class="padding">
+					<h4 class="caption" style="text-align: justify; margin-left: 5px;">{{feed.caption}}</h4>
+					</div>
+
+					<div id='center'>
+						<a href="#"><img src="{{feed.images.image.url}}" width="700px" height="500px"></a>
+					</div><br><br>
+					<div id="left">
+						<a href="#"><button style="width: 70px;height: 35px;margin-left: 20px;margin-top: -10px;font-size: 15px;text-align: center;" class="btn btn-primary btn-lg btn-block register-button">Like</button>
+						</a>
+						<h4 class="post" style="text-align: left;margin-left: 20px;">{{ feed.likes }} Likes</h4>
+					</div><br><br><br><br>
+					{% for comments in comment_data %}
+						{% if comments.post.id == feed.id %}
+						<div class="padding-comments">
+							<span class="comment-user" style="color: black; text-align: left;">
+								<a href="#" style="color: black;">{{ comments.username.username }}</a> |
+							</span>
+							<span class="comment">{{ comments.comment }}</span><br>
+							 <h4 style="font-size: 12px;">Commented on: {{ comments.commented_at }}</h4>
+						</div>
+						<div id="generate-comment"></div>
+						{% endif %}
+					{% endfor %}
+					<br>
+					<form method="post" action="{% url 'feeds:feeds_comment' feed.id user_data.username %}">{% csrf_token %}
+						<!-- <textarea type="text" class="text-box" placeholder="Place comments here." style="margin-left: 2px;border: 1px solid grey;border-radius: 10px;" ></textarea> -->
+						{{ comment_form.comment|add_class:'text-box'}}
+						<button id='create-comment' class="btn btn-primary btn-lg btn-block login-button" style="width: 15%; margin-left: 575px; ">Comment</button>
+					</form>		
+				</div>
+			</div>
+			
+			{% endfor %}
+		</div>
+	
+
+		
+		<script>
+			$('#create-comment').click(function()){
+				console.log('click')
+				// var comment = $('#create-comment-field').val();
+				// $.ajax({
+				// 	url: 'comment/feed.id/user_data.username',
+				// 	data: {'comment': comment},
+				// 	success: function(comments){
+				// 		alert(comments.comment)
+				// 	}
+				// })
+			}
+		</script>
+		{% endblock content %}
+	
+	</body>
+		
+</html>

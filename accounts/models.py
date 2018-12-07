@@ -3,6 +3,11 @@ from django.db import models
 
 
 class AccountsModel(models.Model):
+	"""
+	Accounts 
+	
+	"""
+
 	first_name = models.CharField(max_length=255,default=None)
 	last_name = models.CharField(max_length=255,default=None)
 	username = models.CharField(max_length=255)
@@ -13,6 +18,11 @@ class AccountsModel(models.Model):
 	prof_pic = models.ImageField(upload_to='prof_pic',blank=True,null=True)
 	
 class FollowersModel(models.Model):
+	"""
+	Followers
+	
+	"""
+
 	user = models.ForeignKey(AccountsModel,on_delete=models.CASCADE)
 	follow = models.BooleanField(default=False)
 

@@ -6,13 +6,17 @@ from django.shortcuts import render
 
 
 class RegisterValidation(forms.ModelForm):
-	first_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder':('Enter your First Name'),'class':'form-control',}),max_length = 255)
-	last_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder':('Enter your Last Name'),'class':'form-control'}),max_length = 255)
-	username = forms.CharField(widget=forms.TextInput(attrs={'placeholder':('Enter your Username'),'class':'form-control'}),max_length = 255)
-	email_address = forms.EmailField(widget=forms.TextInput(attrs={'placeholder':('Enter your Email'),'class':'form-control'},),required=True)
-	phone_num = forms.CharField(max_length= 17,widget=forms.TextInput(attrs={'placeholder':('Enter your Phone No.'),'class':'form-control','pattern':"[0-9]{9,11}"}))
-	password = forms.CharField(max_length = 50,min_length=2,widget = forms.TextInput(attrs={'placeholder':('Enter your Password'),'class':'form-control','type':'password'}))
-	confirm = forms.CharField(max_length= 50,min_length=2, widget= forms.TextInput(attrs={'placeholder':('Confirm Password'),'class':'form-control','type':'password'}))
+	"""
+	Register Validation
+	"""
+
+	first_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder':('Enter your First Name')}),max_length=255)
+	last_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder':('Enter your Last Name')}),max_length=255)
+	username = forms.CharField(widget=forms.TextInput(attrs={'placeholder':('Enter your Username')}),max_length=255)
+	email_address = forms.EmailField(widget=forms.TextInput(attrs={'placeholder':('Enter your Email Address')}),required=True)
+	phone_num = forms.CharField(widget=forms.TextInput(attrs={'placeholder':('Enter you Phone No.')}),max_length= 17)
+	password = forms.CharField(widget = forms.TextInput(attrs={'placeholder':('Enter your Password'),'type':'password'}),max_length = 50,min_length=2)
+	confirm = forms.CharField(widget = forms.TextInput(attrs={'placeholder':('Confirm Password'),'type':'password'}),max_length = 50,min_length=2)
 	account_model = AccountsModel.objects.all()
 	
 
@@ -20,21 +24,17 @@ class RegisterValidation(forms.ModelForm):
 		model = AccountsModel
 		fields = ('first_name','last_name','username','email_address','phone_num','password',)
 
-	def clean_email(self):
-		email = self.cleaned_data['email']
-		
-		for account in self.account_model:
-			if email == account.email_address:
-				raise forms.ValidationError('Email already existed!')
-		return email
+	def clean_email_address(self):
+		email = AccountsModel.objects.filter(email_address=self.cleaned_data['email_address'])
+		if email.exists():
+			raise forms.ValidationError('Email already existed!')
+		return self.cleaned_data
 
 	def clean_username(self):
-		username = self.cleaned_data['username']
-
-		for account in self.account_model:
-			if username == account.username:
-				raise forms.ValidationError('Username already existed!')
-		return username
+		username = AccountsModel.objects.filter(username=self.cleaned_data['username'])
+		if username.exists():
+			raise forms.ValidationError('Username already existed!')
+		return self.cleaned_data	
 
 	def clean(self):
 		password = self.cleaned_data['password']
@@ -46,11 +46,14 @@ class RegisterValidation(forms.ModelForm):
 		return self.cleaned_data
 
 
-
-	
 class LoginValidation(forms.Form):
-	username = forms.CharField(widget=forms.TextInput(attrs={'placeholder':('Enter your Username'),'class':'form-control'}),max_length = 255)
-	password = forms.CharField(max_length = 50,min_length=2,widget = forms.TextInput(attrs={'placeholder':('Enter your Password'),'class':'form-control','type':'password'}))
+	"""
+	Login Validation
+	
+	"""
+
+	username = forms.CharField(widget=forms.TextInput(attrs={'placeholder':('Enter your Username')}),max_length = 255)
+	password = forms.CharField(widget = forms.TextInput(attrs={'placeholder':('Enter your Password'),'type':'password'}),max_length = 50,min_length=2)
 	account_model = AccountsModel.objects.all()
 
 	def clean(self):

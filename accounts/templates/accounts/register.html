@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load widget_tweaks %}
 <!DOCTYPE html>
 <html lang="en">
     <head> 
@@ -26,7 +26,7 @@
 									<div class="input-group">
 										<span class="input-group-addon"><i class="fa fa-envelope fa" aria-hidden="true"></i></span>
 										<!-- <input type="text" class="form-control" name="fname" id="fname"  placeholder="Enter your First Name"/> -->
-										{{ forms.first_name}}
+										{{ forms.first_name|add_class:"form-control" }}
 									</div>
 								</div>
 							</div>
@@ -36,7 +36,7 @@
 									<div class="input-group">
 										<span class="input-group-addon"><i class="fa fa-envelope fa" aria-hidden="true"></i></span>
 										<!-- <input type="text" class="form-control" name="lname" id="lname"  placeholder="Enter your Last Name"/> -->
-										{{ forms.last_name }}
+										{{ forms.last_name|add_class:"form-control" }}
 									</div>
 								</div>
 							</div>
@@ -46,7 +46,7 @@
 									<div class="input-group">
 										<span class="input-group-addon"><i class="fa fa-envelope fa" aria-hidden="true"></i></span>
 										<!-- <input type="text" class="form-control" name="email" id="email"  placeholder="Enter your Email"/> -->
-										{{ forms.email_address }}
+										{{ forms.email_address|add_class:"form-control" }}
 										
 									</div>
 								</div>
@@ -58,7 +58,7 @@
 									<div class="input-group">
 										<span class="input-group-addon"><i class="fa fa-users fa" aria-hidden="true"></i></span>
 										<!-- <input type="text" class="form-control" name="username" id="username"  placeholder="Enter your Username"/> -->
-										{{ forms.username }}
+										{{ forms.username|add_class:"form-control"}}
 										
 									</div>
 								</div>
@@ -70,7 +70,7 @@
 									<div class="input-group">
 										<span class="input-group-addon"><i class="fa fa-users fa" aria-hidden="true"></i></span>
 										<!-- <input type="text" class="form-control" name="phone_num" id="phone_num"  placeholder="Enter Phone Number"/> -->
-										{{ forms.phone_num}}
+										{{ forms.phone_num|add_class:"form-control" }}
 										
 									</div>
 								</div>
@@ -83,7 +83,7 @@
 									<div class="input-group">
 										<span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
 										<!-- <input type="password" class="form-control" name="password" id="password"  placeholder="Enter your Password"/> -->
-										{{ forms.password }}
+										{{ forms.password|add_class:"form-control"}}
 										
 									</div>
 								</div>
@@ -95,19 +95,19 @@
 									<div class="input-group">
 										<span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
 										<!-- <input type="password" class="form-control" name="confirm" id="confirm"  placeholder="Confirm your Password"/> -->
-										{{ forms.confirm }}
+										{{ forms.confirm|add_class:"form-control"}}
 									
 									</div>
 								</div>
 							</div>
 							
 							{{ forms.username.errors }}
-							{{ forms.email.errors }}
+							{{ forms.email_address.errors }}
 							{{ forms.non_field_errors }}
 							<input type="submit" n class="btn btn-primary btn-lg btn-block register-button" value="Register" id="register"> 
 							
 					</form>	
-						<a href="{% url 'login' %}" type="button" id="login" class="btn btn-primary btn-lg btn-block login-button">Login</a>
+						<a href="{% url 'accounts:login' %}" type="button" id="login" class="btn btn-primary btn-lg btn-block login-button">Login</a>
 						
 					
 				</div>

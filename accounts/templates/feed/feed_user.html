@@ -1,8 +1,8 @@
-{% extends 'base.html' %}
+{%extends 'base.html'%}
 {% load static %}
 
 {% block title %}
-<title>Profile</title>
+<title>Profile	</title>
 {% endblock title %}
 
 {% block feed_url %}
@@ -22,15 +22,15 @@
 		
 		{% else %}
 		<div id="left">
-			<img src="{{ user_data.prof_pic.url }}" style="border-radius: 50%; margin-top: 40px; ">
+			<img src="{{ profile.prof_pic.url }}" style="border-radius: 50%; margin-top: 40px; ">
 		</div>
 		{% endif %}
 		
 		<div id="center">
 			<div class="padding" style="margin-left: 200px; margin-top: : 20px;">
-				<h4 class="post" style="margin-bottom: : 20px;text-align: left;font-size: 40px;"> {{ user_data.username }} </h4>
-				<h4 class="post" style="text-align: left;font-size: 20px;"> {{ user_data.followers }} Followers </h4><br>
-				<h4 class="post" style="text-align: left;font-size: 25px"> {{ user_data.first_name }} {{ user_data.last_name}}</h4>
+				<h4 class="post" style="margin-bottom: : 20px;text-align: left;font-size: 40px;"> {{ profile.username }} </h4>
+				<h4 class="post" style="text-align: left;font-size: 20px;"> {{ profile.followers }} Followers </h4><br>
+				<h4 class="post" style="text-align: left;font-size: 25px"> {{ profile.first_name }} {{ profile.last_name}}</h4>
 
 			</div>
 		</div>
