@@ -1,14 +1,7 @@
 from django import forms
-from django.shortcuts import render
-from .models import CommentModel
-
+from .models import Comments
 
 class CommentForm(forms.ModelForm):
-	"""
-	Comment Forms
-
-	"""
-
 	comment = forms.CharField(widget=forms.Textarea(attrs={
 		'id':'create-comment-field',
 		'placeholder':('Place Comments Here'),
@@ -19,7 +12,7 @@ class CommentForm(forms.ModelForm):
 
 
 	class Meta:
-		model = CommentModel
+		model = Comments
 		fields = ('comment',)
 
 	def clean(self):

@@ -1,15 +1,12 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.contrib import admin
-from .models import FeedModel,CommentModel,LikesModel
+from .models import Feeds,Comments,LikesUser
 
 class FeedAdmin(admin.ModelAdmin):
-	list_display = ['username','caption','likes']
+	list_display = ['user','caption','likes']
 
 class CommentAdmin(admin.ModelAdmin):
-	list_display = ['post','username','comment','commented_at']
+	list_display = ['post','user','comment','commented_at']
 
-admin.site.register(FeedModel,FeedAdmin)
-admin.site.register(CommentModel,CommentAdmin)
-admin.site.register(LikesModel)
+admin.site.register(Feeds,FeedAdmin)
+admin.site.register(Comments,CommentAdmin)
+admin.site.register(LikesUser)

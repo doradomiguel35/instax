@@ -1,28 +1,25 @@
-from __future__ import unicode_literals
 from django.db import models
+from django.contrib.auth.models import User
 
-
-class AccountsModel(models.Model):
+# Create your models here.
+class Account(models.Model):
 	"""
-	Accounts 
+	Accounts model
 	
 	"""
-
-	first_name = models.CharField(max_length=255,default=None)
-	last_name = models.CharField(max_length=255,default=None)
-	username = models.CharField(max_length=255)
-	email_address = models.EmailField()
-	password = models.CharField(max_length=50)
-	phone_num = models.CharField(max_length=12)
+	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	followers = models.IntegerField(default=0)
 	prof_pic = models.ImageField(upload_to='prof_pic',blank=True,null=True)
-	
-class FollowersModel(models.Model):
+
+
+class Followers(models.Model):
 	"""
 	Followers
 	
 	"""
 
-	user = models.ForeignKey(AccountsModel,on_delete=models.CASCADE)
+	user = models.ForeignKey(User,on_delete=models.CASCADE)
 	follow = models.BooleanField(default=False)
+
+
 

@@ -6,7 +6,7 @@
 {% endblock title %}
 
 {% block feed_url %}
-<a href="{% url 'feeds:feeds' user_data.username  %}"><h1 class="title" style="margin-top: -5px; margin-right: -30px">𝐼𝓃𝓈𝓉𝒶𝓍</h1></a>
+<a href="{% url 'feeds:feeds'%}"><h1 class="title" style="margin-top: -5px; margin-right: -30px">𝐼𝓃𝓈𝓉𝒶𝓍</h1></a>
 {% endblock feed_url %}
 
 {% block profile_url %}
@@ -22,7 +22,7 @@
 		
 		{% else %}
 		<div id="left">
-			<img src="{{ user_data.prof_pic.url }}" style="border-radius: 50%; margin-top: 40px; ">
+			<img src="{{ user_data.account.prof_pic.url }}" style="border-radius: 50%; margin-top: 40px; ">
 		</div>
 		{% endif %}
 		
@@ -31,7 +31,7 @@
 				<h4 class="post" style="margin-bottom: : 20px;text-align: left;font-size: 40px;"> {{ user_data.username }} </h4>
 				<h4 class="post" style="text-align: left;font-size: 20px;"> {{ user_data.followers }} Followers </h4><br>
 				<h4 class="post" style="text-align: left;font-size: 25px"> {{ user_data.first_name }} {{ user_data.last_name}}</h4>
-
+				
 			</div>
 		</div>
 		

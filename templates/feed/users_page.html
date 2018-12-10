@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+
+{% block title %}
+<title>Feeds - {{ user_data.username }}</title>
+{% endblock title %}
+
+{% block feed_url %}
+<a href="{% url 'feeds:feeds' %}">
+	<h1 class="title" class="logo-position">𝐼𝓃𝓈𝓉𝒶𝓍</h1>
+</a>
+{% endblock feed_url %}
+
+
+{{ user_data.username }}
+
+{% block content %}
+
+<div class="main-body">
+	{% for feed in feed_data %}
+	<div id="nav-container" class="nav-container-position">
+		<div id="navbar">
+			
+			{% if feed.user.account.prof_pic %}
+			
+			<div id="left">
+				<a href="{% url 'profile:profile' feed.user.username %}">
+					<img src="{{ feed.user.account.prof_pic.url }}" class="feed-prof-pic" >
+				</a>
+				<h4 class="post" id='feed-prof-username'>
+					<a href="{% url 'profile:profile' feed.user.username %}">
+						{{ feed.user.username}}
+					</a>
+				</h4>
+			</div>
+			<br><br>
+			
+			{% else %}
+
+			<div id="left">
+				<a href="{% url 'profile:profile' feed.user.username %}">
+					<img src="{% static 'user_profile/img/blank_picture.png' %}" class="feed-prof-pic">
+				</a>
+				<h4 class="post" id='feed-prof-username'>
+					<a href="{% url 'profile:profile' feed.user.username %}">
+						{{ feed.user.username}}
+					</a>
+				</h4>
+			</div>
+			<br><br>
+			
+			{% endif %}
+			
+			<div class="padding">
+				<h4 class="caption" id="feed-caption">
+					{{feed.caption}}
+				</h4>
+			</div>
+			<div id='center'>
+				<a href="#"><img src="{{feed.images.image.url}}" width="700px" height="500px"></a>
+			</div>
+			<br><br>
+			<div id="left">
+				<a href="#">
+					<button id="like-btn" class="btn btn-primary btn-lg btn-block register-button">Like</button>
+				</a>
+				<h4 class="post" id="like-no">
+					{{ feed.likes }} Likes
+				</h4>
+			</div>
+			<br><br><br><br>
+			{% for comments in comment_data %}
+				{% if comments.post.id == feed.id %}
+				<div class="padding-comments">
+					<span class="comment-user" id="comment-user">
+						<a href="{% url 'profile:profile' comments.user.username %}" style="color: black;">
+							{{ comments.user.username }} |
+						</a> 
+					</span>
+					<span class="comment">
+						{{ comments.comment }}
+					</span>
+					<br>
+					 <h4 style="font-size: 12px;">
+					 	Commented on: {{ comments.commented_at }}
+					 </h4>
+				</div>
+				{% endif %}
+			{% endfor %}
+			<br>
+			<form method="post" action="#">{% csrf_token %}
+				{{ comment_form.comment|add_class:'text-box' }}
+				<button id='create-comment' class="btn btn-primary btn-lg btn-block login-button">Comment</button>
+			</form>
+		</div>
+	</div>
+	
+	{% endfor %}
+</div>
+<script>
+	$('.comment-form').submit(function(event){
+		console.log('triggered');
+		event.preventDefault();
+		
+		var url = $(this).attr('action')
+		$.ajax({
+			url: url,
+
+			data: $(this).serialize(),
+			success: function(data){
+				console.log(data)
+			}
+		})
+	});
+</script>
+
+<!-- <script>
+	$('#create-comment').click(function()){
+		console.log('click')
+		var comment = $('#create-comment-field').val();
+		$.ajax({
+			url: 'comment/feed.id/user_data.username',
+			data: {'comment': comment},
+			success: function(comments){
+				alert(comments.comment)
+			}
+		})
+	}
+</script> -->
+{% endblock content %}

@@ -1,0 +1,42 @@
+{% extends 'accounts/base_create.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block login_title %}
+<title>Login - Instax</title>
+{% endblock login_title %}
+
+{% block login %}	
+<h5>Welcome to Instax!  </h5>
+	<form method="post">	
+		{% csrf_token %}
+		<div class="form-group">
+			<label for="username" class="cols-sm-2 control-label">Username</label>
+			<div class="cols-sm-10">
+				<div class="input-group">
+					<span class="input-group-addon"><i class="fa fa-users fa" aria-hidden="true"></i></span>
+					<!-- <input type="text" class="form-control" name="username" id="username"  placeholder="Enter your Username"/> -->
+					{{ forms.username|add_class:"form-control" }}
+				</div>
+			</div>
+		</div>
+	
+		<div class="form-group">
+			<label for="password" class="cols-sm-2 control-label">Password</label>
+			<div class="cols-sm-10">
+				<div class="input-group">
+					<span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
+					<!-- <input type="password" class="form-control" name="password" id="password"  placeholder="Enter your Password"/> -->
+					{{ forms.password|add_class:"form-control"}}
+				</div>
+			</div>
+		</div>
+		{% block content %}
+			{% endblock %}
+		<input value="Login"class="btn btn-primary btn-lg btn-block login-button" type="submit" id="login">
+	</form>	
+
+	<div class="form-group ">
+		<a href="{% url 'account:register' %}" type="button" id="button" class="btn btn-primary btn-lg btn-block login-button">Sign Up</a>
+	</div>
+{% endblock login %}

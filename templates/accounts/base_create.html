@@ -1,0 +1,36 @@
+{% load static %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+		<link rel="icon" href="{% static 'feed/img/code.png' %}">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="{% static 'accounts/css/bootstrap.min.css' %}" rel="stylesheet">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+		<link rel="stylesheet" href="{% static 'accounts/css/login.css' %}">
+		<link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script src="{% static 'js/bootstrap.min.js' %}"></script> 
+    	
+		{% block login_title %}
+		{% endblock login_title %}
+
+		{% block register_title %}
+		{% endblock register_title %}
+	</head>
+	<body>
+		<div class="container">
+			<div class="row main">
+				<div class="main-login main-center">
+				{% block login %}
+				{% endblock login %}
+				{% block register %}
+				{% endblock register %}
+				</div>
+			</div>
+		</div>
+
+	
+	</body>
+</html>
