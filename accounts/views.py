@@ -26,14 +26,17 @@ class RegisterView(TemplateView):
 
 	def post(self,request, *args, **kwargs):
 		form = RegisterValidation(request.POST)
-		# import pdb; pdb.set_trace()
 		if form.is_valid():
 			user = form.save()
 			user.set_password(form.cleaned_data.get('password'))
 			user.save()
 			user = authenticate(username=form.cleaned_data.get('username'),password=form.cleaned_data.get('password'))
 			login(request,user)
-			return render(request,'feed/feed_user.html',{'feed_data':self.feed_data,'comment_data':self.comment_data,'user_data':self.request.user,'comment_form':self.comment_form})
+			return render(request,'feed/feed_user.html',{'feed_data':self.feed_data,
+				'comment_data':self.comment_data,
+				'user_data':self.request.user,
+				'comment_form':self.comment_form
+			})
 		return render(request,self.template_name,{'forms':form}) 
 
 
@@ -57,6 +60,11 @@ class LoginView(TemplateView):
 		if forms.is_valid():
 			user = authenticate(username=forms.cleaned_data.get('username'),password=forms.cleaned_data.get('password'))
 			login(request,user)
-			# import pdb;pdb.set_trace()
-			return render(request,'feed/users_page.html',{'feed_data':self.feed_data,'comment_data':self.comment_data,'forms':forms,'user_data': self.request.user,'comment_form':self.comment_form})
+			return render(request,'feed/users_page.html',{
+				'feed_data':self.feed_data,
+				'comment_data':self.comment_data,
+				'forms':forms,
+				'user_data': self.request.user,
+				'comment_form':self.comment_form
+			})
 		return render(request, self.template_name,{'forms':forms })

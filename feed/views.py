@@ -5,7 +5,7 @@ from accounts.models import Account,Followers
 from user_profile.models import PicturesUser
 from .forms import CommentForm
 from django.http import JsonResponse
-# from .serializers import CommentSerialize
+from .serializers import CommentSerialize
 
 from django.shortcuts import render
 
@@ -25,12 +25,13 @@ class FeedsView(TemplateView):
 
 	def post(self,request, *args, **kwargs):
 		form = CommentForm(self.request.POST)	
-		feed = Feed.objects.get(id=kwargs.get('feed_id'))
+		feed = Feeds.objects.get(id=kwargs.get('feed_id'))
 		if form.is_valid():
 			comment = form.save(commit=False)
 			comment.post_id = feed.id
-			comment.username_id = self.request.user.id
-			# comment.save()
-			# serializer = CommentSerialize(CommentModel.objects.get(id=comment.id))
-			import pdb; pdb.set_trace()
-			# return JsonResponse(serializer.data, safe=False)
+			comment.user_id = self.request.user.id
+			comment.save()
+			serializer = CommentSerialize(Comments.objects.get(id=comment.id))
+			json = serializer.data
+			json['username'] = self.request.user.username
+			return JsonResponse(json, safe=False)

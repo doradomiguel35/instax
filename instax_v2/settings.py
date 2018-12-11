@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'feed.apps.FeedConfig',
     'user_profile.apps.UserProfileConfig',
     'widget_tweaks',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

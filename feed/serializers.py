@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from feed.models import CommentModel
+from feed.models import Comments
 
 
 class CommentSerialize(serializers.ModelSerializer):
@@ -8,11 +8,11 @@ class CommentSerialize(serializers.ModelSerializer):
 
 	"""
 	class Meta:
-		model = CommentModel
+		model = Comments
 		fields = (
 			'id',
 			'post_id',
-			'username_id',
+			'user_id',
 			'comment',
 			'commented_at')
 		

@@ -87,12 +87,14 @@
 					 	Commented on: {{ comments.commented_at }}
 					 </h4>
 				</div>
+				
 				{% endif %}
 			{% endfor %}
+			<div class="insertComment"></div>
 			<br>
-			<form method="post" action="#">{% csrf_token %}
+			<form method="post" action="{% url 'feeds:comment' feed.id %}" class='comment-form'>{% csrf_token %}
 				{{ comment_form.comment|add_class:'text-box' }}
-				<button id='create-comment' class="btn btn-primary btn-lg btn-block login-button">Comment</button>
+				<input id='create-comment' class="btn btn-primary btn-lg btn-block login-button" type="submit" value="Comment" />
 			</form>
 		</div>
 	</div>
@@ -101,18 +103,30 @@
 </div>
 <script>
 	$('.comment-form').submit(function(event){
-		console.log('triggered');
 		event.preventDefault();
-		
 		var url = $(this).attr('action')
 		$.ajax({
 			url: url,
-
+			type: "POST",
 			data: $(this).serialize(),
 			success: function(data){
-				console.log(data)
+				console.log(data.username);
+				$('.insertComment').append(`<div class="padding-comments">
+					<span class="comment-user" id="comment-user">
+						<a href="#" style="color: black;">`+
+						data.username+ `|`+
+						`</a> 
+					</span>
+					<span class="comment">`+
+						data.comment+
+					`</span>
+					<br>
+					 <h4 style="font-size: 12px;">
+					 	Commented on:` +data.commented_at+
+					 `</h4>
+				</div>`);
 			}
-		})
+		});
 	});
 </script>
 
