@@ -63,9 +63,9 @@
 			</div>
 			<br><br>
 			<div id="left">
-				<a href="#">
-					<button id="like-btn" class="btn btn-primary btn-lg btn-block register-button">Like</button>
-				</a>
+				<form method="post" action="{% url 'feeds:like' feed.id %}" class="like">{% csrf_token %}
+					<button id="like-btn" class="btn btn-primary btn-lg btn-block register-button" type="submit">Like</button>
+				</form>
 				<h4 class="post" id="like-no">
 					{{ feed.likes }} Likes
 				</h4>
@@ -110,8 +110,9 @@
 			type: "POST",
 			data: $(this).serialize(),
 			success: function(data){
-				console.log(data.username);
-				$('.insertComment'+data.post_id).append(`<div class="padding-comments">
+				console.log(data);
+
+				$('.insertComment'+data.post_id).prepend(`<div class="padding-comments">
 					<span class="comment-user" id="comment-user">
 						<a href="#" style="color: black;">`+
 						data.username+ `|
@@ -125,9 +126,16 @@
 					 	Commented on:` +data.commented_at+
 					 `</h4>
 				</div>`);
+				$('.text-box').val('');
 			}
 		});
 	});
+
+	$('.like').submit(function(event){
+		console.log()
+	});
+
+
 </script>
 
 {% endblock content %}

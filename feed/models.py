@@ -34,3 +34,4 @@ class LikesUser(models.Model):
 	
 	feed = models.ForeignKey(Feeds, on_delete=models.CASCADE)
 	user = models.ForeignKey(User,on_delete=models.CASCADE)
+	liked = models.BooleanField(default=False)
