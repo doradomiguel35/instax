@@ -65,10 +65,14 @@
 			<div id="left">
 				<form method="post" action="{% url 'feeds:like' feed.id %}" class="like">{% csrf_token %}
 					<button id="like-btn" class="btn btn-primary btn-lg btn-block register-button" type="submit">Like</button>
+					<!-- <label class="switch" style="margin-right: px;">
+					  {{ like_field }}
+					  <span class="slider round"></span>
+					</label> -->
 				</form>
-				<h4 class="post" id="like-no">
+				<h4 class="post" id="like-no{{feed.id}}" style="margin-right: 100px;">
 					{{ feed.likes }} Likes
-				</h4>
+				</h4>	
 			</div>
 			<br><br><br><br>
 			{% for comments in comment_data %}
@@ -110,8 +114,6 @@
 			type: "POST",
 			data: $(this).serialize(),
 			success: function(data){
-				console.log(data);
-
 				$('.insertComment'+data.post_id).prepend(`<div class="padding-comments">
 					<span class="comment-user" id="comment-user">
 						<a href="#" style="color: black;">`+
@@ -132,7 +134,20 @@
 	});
 
 	$('.like').submit(function(event){
-		console.log()
+		event.preventDefault();
+		console.log('liked');
+		var url = $(this).attr('action')
+		$.ajax({
+			url: url,
+			type: "POST",
+			data: $(this).serialize(),
+			success: function(data){
+				$('#like-no'+data.id).replaceWith(`
+					<h4 class='post' id='like-no`+data.id+`' style="margin-right: 100px;">`+
+						data.likes+` Like
+					</h4>`);
+			}
+		});
 	});
 
 

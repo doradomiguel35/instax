@@ -1,7 +1,13 @@
 from django import forms
-from .models import Comments
+from .models import Comments,LikesUser
+
 
 class CommentForm(forms.ModelForm):
+	"""
+	Comment Form
+
+	"""
+
 	comment = forms.CharField(widget=forms.Textarea(attrs={
 		'id':'create-comment-field',
 		'placeholder':('Place Comments Here'),
@@ -17,3 +23,15 @@ class CommentForm(forms.ModelForm):
 
 	def clean(self):
 		return self.cleaned_data
+
+
+class LikeForm(forms.ModelForm):
+
+	liked = forms.BooleanField(widget=forms.CheckboxInput(attrs={
+		'id':'like-button',
+		'type':'checkbox',
+		}),label='')
+
+	class Meta:
+		model = LikesUser
+		fields = ('liked',)
