@@ -65,16 +65,15 @@
 			<div id="left">
 				<form method="post" action="{% url 'feeds:like' feed.id %}" class="like">{% csrf_token %}
 					<button id="like-btn" class="btn btn-primary btn-lg btn-block register-button" type="submit">Like</button>
-					<!-- <label class="switch" style="margin-right: px;">
-					  {{ like_field }}
-					  <span class="slider round"></span>
-					</label> -->
 				</form>
 				<h4 class="post" id="like-no{{feed.id}}" style="margin-right: 100px;">
 					{{ feed.likes }} Likes
-				</h4>	
+				</h4>
+				<form method="get" action="{% url 'feeds:like' feed.id %}" class="likers">
+					<button style="margin-right: 10px;">View who liked this...</button>
+				</form>	
 			</div>
-			<br><br><br><br>
+			<br><br><br><br><br><br>
 			{% for comments in comment_data %}
 				{% if comments.post.id == feed.id %}
 				<div class="padding-comments">
@@ -108,7 +107,7 @@
 <script>
 	$('.comment-form').submit(function(event){
 		event.preventDefault();
-		var url = $(this).attr('action')
+		var url = $(this).attr('action');
 		$.ajax({
 			url: url,
 			type: "POST",
@@ -136,7 +135,7 @@
 	$('.like').submit(function(event){
 		event.preventDefault();
 		console.log('liked');
-		var url = $(this).attr('action')
+		var url = $(this).attr('action');
 		$.ajax({
 			url: url,
 			type: "POST",
@@ -144,12 +143,37 @@
 			success: function(data){
 				$('#like-no'+data.id).replaceWith(`
 					<h4 class='post' id='like-no`+data.id+`' style="margin-right: 100px;">`+
-						data.likes+` Like
+						data.likes+` Likes
 					</h4>`);
 			}
 		});
 	});
 
+	$('.likers').on('click',function(event){
+		event.preventDefault();
+		var url = $(this).attr('action')
+		$('.overlay').addClass('active');
+		
+		$.ajax({
+			url:url,
+			data: $(this).serialize(),
+			success: function(data){
+				for(var i = 0; i < data['data'].length; i++){
+					$('.content').append(`
+						<span style="font-size:20px;">
+						<img src=/media/`+data['data'][i].user__account__prof_pic+` style="border-radius:50%;width:15%;margin-right:10px;">
+							`+data['data'][i].user__username+`
+						</span>
+						<br><br>`);
+				}
+			}
+		});
+
+		$('.close').on('click',function(event){
+			$('.overlay').removeClass('active');
+			$('.content').empty();
+		});
+	});
 
 </script>
 

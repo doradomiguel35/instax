@@ -5,14 +5,16 @@
     <head> 
 		<link rel="icon" href="{% static 'feed/img/code.png' %}">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<link rel="stylesheet" href="{% static 'feed/css/popup.css' %}">
 		<link href="{% static 'feed/css/bootstrap.min.css' %}" rel="stylesheet">
-		<link rel="stylesheet" href="{% static 'feed/css/buttons.css' %}">
 		<link rel="stylesheet" href="{% static 'feed/css/login.css' %}">
 		<link rel="stylesheet" href="{% static 'feed/css/instax.css' %}">
 		<link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
 		<link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="{% static 'feed/css/feed-position.css' %}">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
     	
 		{% block title %}
 		{% endblock title %}
@@ -34,12 +36,18 @@
 		</div>
 		{% block content %}
 		{% endblock content %}
-		
-		
-
+		<div id="popup1" class="overlay">
+			<div class="popup">
+				<h2>People who liked this...</h2><br>
+				<button class="close">&times;</button>
+				<div class="content">
+					
+				</div>
+			</div>
+		</div>
 		{% block ajax %}
 		{% endblock ajax %}
-		
+
 	</body>
 		
 </html>
