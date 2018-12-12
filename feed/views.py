@@ -43,7 +43,7 @@ class FeedsView(TemplateView):
 			return JsonResponse(json, safe=False)
 
 
-class LikeView(TemplateView):
+class LikeView(View):
 	"""
 	Likes View
 
@@ -51,9 +51,9 @@ class LikeView(TemplateView):
 	
 	def post(self,request,*args,**kwargs):
 		feed_data = Feeds.objects.get(id=kwargs.get('feed_id'))
-		like_user = LikesUser.objects.get(feed_id=kwargs.get('feed_id'),user_id=self.request.user.id)
 		# import pdb; pdb.set_trace()
 		try:
+			like_user = LikesUser.objects.get(feed_id=kwargs.get('feed_id'),user_id=self.request.user.id)
 			print('try')
 			if like_user.liked == True:
 				print('if')
