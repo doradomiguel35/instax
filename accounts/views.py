@@ -5,7 +5,8 @@ from .forms import RegisterValidation,LoginValidation
 from .models import Account
 from feed.models import Feeds,Comments,LikesUser
 from django.views.generic import TemplateView
-from feed.forms import CommentForm
+from feed.forms import CommentForm,FeedForm
+from user_profile.forms import PicturesForm
 
 # Create your views here.
 class RegisterView(TemplateView):
@@ -20,9 +21,13 @@ class RegisterView(TemplateView):
 	comment_data = Comments.objects.all()
 	get_forms = RegisterValidation()
 	comment_form = CommentForm()
+	feed_form = FeedForm()
+	picture_form = PicturesForm()
 	
 	def get(self, *args, **kwargs):
-		return render(self.request,self.template_name, {'context_data': self.context,'forms':self.get_forms})
+		return render(self.request,self.template_name, {
+			'context_data': self.context,
+			'forms':self.get_forms})
 
 	def post(self,request, *args, **kwargs):
 		form = RegisterValidation(request.POST)
@@ -32,11 +37,15 @@ class RegisterView(TemplateView):
 			user.save()
 			user = authenticate(username=form.cleaned_data.get('username'),password=form.cleaned_data.get('password'))
 			login(request,user)
-			return render(request,'feed/feed_user.html',{'feed_data':self.feed_data,
+			return render(request,'feed/feed_user.html',{
+				'feed_data':self.feed_data,
 				'comment_data':self.comment_data,
 				'user_data':self.request.user,
-				'comment_form':self.comment_form
+				'comment_form':self.comment_form,
+				'feed_form':self.feed_form,
+				'picture_form':self.picture_form,
 			})
+
 		return render(request,self.template_name,{'forms':form}) 
 
 
@@ -51,6 +60,8 @@ class LoginView(TemplateView):
 	comment_data = Comments.objects.all()
 	get_forms = LoginValidation()
 	comment_form = CommentForm()
+	feed_form = FeedForm()
+	picture_form = PicturesForm()	
 	
 	def get(self,*args,**kwargs):
 		return render(self.request, self.template_name,{'forms':self.get_forms})
@@ -65,6 +76,8 @@ class LoginView(TemplateView):
 				'comment_data':self.comment_data,
 				'forms':forms,
 				'user_data': self.request.user,
-				'comment_form':self.comment_form
+				'comment_form':self.comment_form,
+				'feed_form':self.feed_form,
+				'picture_form':self.picture_form,
 			})
 		return render(request, self.template_name,{'forms':forms })

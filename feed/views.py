@@ -1,15 +1,16 @@
 from __future__ import unicode_literals
 from django.views.generic import TemplateView,View
-from .models import Feeds,Comments,LikesUser
-from accounts.models import Account,Followers
-from user_profile.models import PicturesUser
-from .forms import CommentForm,LikeForm
 from django.http import JsonResponse
-from .serializers import CommentSerialize,FeedSerialize,LikesSerialize
 from django.shortcuts import render
 from django.core import serializers
 from django.contrib.auth.models import User
-import json
+from .models import Feeds,Comments,LikesUser
+from accounts.models import Account,Followers
+from user_profile.models import PicturesUser
+from feed.forms import CommentForm,FeedForm
+from user_profile.forms import PicturesForm
+from .forms import CommentForm,LikeForm
+from .serializers import CommentSerialize,FeedSerialize,LikesSerialize
 
 
 class FeedsView(TemplateView):
@@ -20,10 +21,13 @@ class FeedsView(TemplateView):
 
 	"""
 	template_name = 'feed/users_page.html'
-	feed_data = Feeds.objects.all()
+	feed_data = Feeds.objects.all().order_by('-id')
 	comment_data = Comments.objects.all()
 	comment_form = CommentForm()
 	like_field = LikeForm()
+	feed_form = FeedForm()
+	picture_form = PicturesForm()
+	
 	
 	def get(self, *args, **kwargs):
 		self.comment_data._result_cache = None
@@ -34,6 +38,8 @@ class FeedsView(TemplateView):
 			'comment_data':self.comment_data,
 			'user_data':self.request.user,
 			'comment_form':self.comment_form,
+			'feed_form':self.feed_form,
+			'picture_form':self.picture_form,
 		})
 
 	def post(self,request, *args, **kwargs):
@@ -46,17 +52,17 @@ class FeedsView(TemplateView):
 			comment.save()
 			comment.refresh_from_db()
 			serializer = CommentSerialize(Comments.objects.get(id=comment.id))
-			json = serializer.data
-			json['username'] = self.request.user.username
+			serialized = serializer.data
+			serialized['username'] = self.request.user.username
 			
-			return JsonResponse(json, safe=False)
+			return JsonResponse(serialized, safe=False)
 
 
 class LikeView(View):
 	"""
 	Likes View 
-	GET - retrieve username and prof pic, return json for displaying accounts that liked the post
-	POST - each user can like a post only once, if a post is already liked, then the user clicked the like button, it will be unliked
+	GET - retrieve username and prof pic, return json to display accounts that liked the post
+	POST - each user can like a post once, if a post is already liked, then the user clicked the like button, it will be unliked
 
 	"""
 	def get(self,request,*args,**kwargs):
@@ -98,8 +104,8 @@ class LikeView(View):
 			like_user.save()
 			feed_data.save()
 			feed_serializer = FeedSerialize(feed_data)
-			json = feed_serializer.data
-			return JsonResponse(json, safe=False)
+			serialized = feed_serializer.data
+			return JsonResponse(serialized, safe=False)
 
 
 			

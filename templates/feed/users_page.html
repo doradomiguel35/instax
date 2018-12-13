@@ -19,12 +19,33 @@
 {% block content %}
 
 <div class="main-body">
+	<form action="" method="post">
+		{% csrf_token %}
+		<div id="nav-container" class="nav-container-position">
+			<div id="navbar">
+				<div id="left" >
+					<h4 class="post" style="text-align: left;margin-top: -10px;margin-left: 20px;">Create post</h4>
+
+				</div>
+				{{ feed_form.caption }}
+				<div id="left" style="margin-left: 70px;">
+					{{ picture_form.image}}
+				</div>
+				<div id="right">
+					<button id="create-post" class="btn btn-primary btn-lg btn-block register-button" type="submit" style="width: 133px;">Post</button>
+				</div>
+				<br><br><br>	
+			</div>
+		</div>	
+
+	</form>
+	
+	<div id="new-posts"></div>
 	{% for feed in feed_data %}
 	<div id="nav-container" class="nav-container-position">
 		<div id="navbar">
 			
 			{% if feed.user.account.prof_pic %}
-			
 			<div id="left">
 				<a href="{% url 'profile:profile' feed.user.username %}">
 					<img src="{{ feed.user.account.prof_pic.url }}" class="feed-prof-pic" >
