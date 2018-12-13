@@ -26,7 +26,6 @@ class ProfileView(TemplateView):
 				'no_prof_pic': False,
 				'pictures':pictures
 			})
-			
 		except:
 			return render(request,self.template_name,{
 				'user_data': account,

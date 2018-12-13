@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from user_profile.models import PicturesUser
-# Create your models here.
+
+
 class Feeds(models.Model):
 	"""
 	Feed

@@ -12,8 +12,8 @@
 }
 body, html{
      height: 1000px;
-    background-repeat: no-repeat;
-    background:url(https://i.ytimg.com/vi/4kfXjatgeEU/maxresdefault.jpg);
+  /*  background-repeat: no-repeat;
+    background:url(https://i.ytimg.com/vi/4kfXjatgeEU/maxresdefault.jpg);*/
     font-family: 'Oxygen', sans-serif;
         background-size: cover;
 }

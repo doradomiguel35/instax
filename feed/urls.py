@@ -7,4 +7,5 @@ urlpatterns = [
     path('',views.FeedsView.as_view(),name='feeds'),
     path('comment/<int:feed_id>/',views.FeedsView.as_view(),name='comment'),
     path('like/<int:feed_id>/',views.LikeView.as_view(),name='like'),
+    path('create_post/',views.CreatePost.as_view(),name='create_post')
 ]

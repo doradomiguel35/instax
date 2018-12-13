@@ -19,30 +19,29 @@
 {% block content %}
 
 <div class="main-body">
-	<form action="" method="post">
+	<form action="{% url 'feeds:create_post' %}" method="post" enctype="multipart/form-data" class="create-post">
 		{% csrf_token %}
 		<div id="nav-container" class="nav-container-position">
 			<div id="navbar">
 				<div id="left" >
 					<h4 class="post" style="text-align: left;margin-top: -10px;margin-left: 20px;">Create post</h4>
-
 				</div>
 				{{ feed_form.caption }}
 				<div id="left" style="margin-left: 70px;">
 					{{ picture_form.image}}
 				</div>
 				<div id="right">
-					<button id="create-post" class="btn btn-primary btn-lg btn-block register-button" type="submit" style="width: 133px;">Post</button>
+					<button  class="btn btn-primary btn-lg btn-block register-button" type="submit" style="width: 133px;">Post</button>
 				</div>
 				<br><br><br>	
 			</div>
 		</div>	
-
 	</form>
-	
-	<div id="new-posts"></div>
+
+	<div id='new-post'></div>
 	{% for feed in feed_data %}
-	<div id="nav-container" class="nav-container-position">
+	
+	<div id="nav-container">
 		<div id="navbar">
 			
 			{% if feed.user.account.prof_pic %}
@@ -95,27 +94,29 @@
 				</form>	
 			</div>
 			<br><br><br><br><br><br>
+			<div class="comments">
 			{% for comments in comment_data %}
 				{% if comments.post.id == feed.id %}
-				<div class="padding-comments">
-					<span class="comment-user" id="comment-user">
-						<a href="{% url 'profile:profile' comments.user.username %}" style="color: black;">
-							{{ comments.user.username }} |
-						</a> 
-					</span>
-					<span class="comment">
-						{{ comments.comment }}
-					</span>
-					<br>
-					 <h4 style="font-size: 12px;">
-					 	Commented on: {{ comments.commented_at }}
-					 </h4>
-				</div>
+
+					<div class="padding-comments">
+						<span class="comment-user" id="comment-user">
+							<a href="{% url 'profile:profile' comments.user.username %}" style="color: black;">
+								{{ comments.user.username }} |
+							</a> 
+						</span>
+						<span class="comment">
+							{{ comments.comment }}
+						</span>
+						 <h4 style="font-size: 12px;">
+						 	Commented on: {{ comments.commented_at }}
+						 </h4>
+					</div>
 				
 				{% endif %}
 			{% endfor %}
-			<div class="insertComment{{feed.id}}"></div>
-			<br>
+			<div class="insertComment{{feed.id}}" ></div>
+			</div>
+			
 			<form method="post" action="{% url 'feeds:comment' feed.id %}" class='comment-form'>{% csrf_token %}
 				{{ comment_form.comment|add_class:'text-box' }}
 				<input id='create-comment' class="btn btn-primary btn-lg btn-block login-button" type="submit" value="Comment" />
@@ -195,6 +196,79 @@
 			$('.content').empty();
 		});
 	});
+
+	$('.create-post').submit(function(event){
+		event.preventDefault();
+		console.log('clicked');
+		var url = $(this).attr('action');
+		var data = new FormData(this);
+		console.log(data);
+		$.ajax({
+			url: url,
+			type: 'POST',
+			data: data,
+			cache: false,
+			contentType: false,
+			processData: false,
+			success: function(data){
+				console.log(data);
+				var prof_pic;
+				if(data.prof_pic === undefined){
+					prof_pic = "/static/user_profile/img/blank_picture.png"
+				}
+				else{
+					prof_pic = data.prof_pic;
+				}
+				$('#new-post').append(`
+					<div id="nav-container">
+						<div id="navbar">
+							<div id="left">
+								<a href="/profile/"`+data.username+`>
+									<img src=`+prof_pic+` class="feed-prof-pic" >
+								</a>
+								<h4 class="post" id='feed-prof-username'>
+									<a href="/profile/`+data.username+`">`
+									+data.username+
+									`</a>
+								</h4>	
+							</div>
+							<br><br>
+							<div class="padding">
+								<h4 class="caption" id="feed-caption">`
+								+data.caption+
+								`</h4>
+							</div>
+							<div id='center'>
+								<a href="#"><img src="`+data.image+`" width="700px" height="500px"></a>
+							</div>
+							<br><br>
+							<div id="left">
+								<form method="post" action="/feeds/like/`+data.id+`/" class="like">{% csrf_token %}
+									<button id="like-btn" class="btn btn-primary btn-lg btn-block register-button" type="submit">Like</button>
+								</form>
+								<h4 class="post" id="like-no`+data.id+`" style="margin-right: 100px;">`
+									+data.likes+` Likes
+								</h4>
+								<form method="get" action="/feeds/like/`+data.id+`" class="likers">
+									<button style="margin-right: 10px;">View who liked this...</button>
+								</form>	
+							</div>
+							<br><br><br><br><br><br>
+							<div class="insertComment`+data.id+`" ></div>
+							<form method="post" action="/feeds/comment/`+data.id+`/" class='comment-form'>{% csrf_token %}
+								{{ comment_form.comment|add_class:'text-box' }}
+								<input id='create-comment' class="btn btn-primary btn-lg btn-block login-button" type="submit" value="Comment" />
+							</form>
+						</div>
+					</div>
+					`);
+				
+
+			}
+
+		});
+	});
+
 
 </script>
 

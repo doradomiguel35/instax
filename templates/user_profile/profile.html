@@ -17,7 +17,7 @@
 	<div class="main-body">
 		{% if no_prof_pic == True %}
 		<div id="left">
-			<img src="{% static 'user_profile/img/blank_picture.png' %}" style="border-radius: 50%; margin-top: 40px; ">
+			<img src="{% static 'user_profile/img/blank_picture.png' %}" style="border-radius: 50%; margin-top: 40px; width: 150px;">
 		</div>
 		
 		{% else %}
@@ -29,13 +29,13 @@
 		<div id="center">
 			<div class="padding" style="margin-left: 200px; margin-top: : 20px;">
 				<h4 class="post" style="margin-bottom: : 20px;text-align: left;font-size: 40px;"> {{ user_data.username }} </h4>
-				<h4 class="post" style="text-align: left;font-size: 20px;"> {{ user_data.followers }} Followers </h4><br>
+				<h4 class="post" style="text-align: left;font-size: 20px;">  Followers {{ user_data.account.followers }}</h4><br>
 				<h4 class="post" style="text-align: left;font-size: 25px"> {{ user_data.first_name }} {{ user_data.last_name}}</h4>
 				
 			</div>
 		</div>
-		
-		<br><br><br><br><br><br>
+		<br><br><br><br>
+			
 	</div>
 		<div class="padding-gallery">
 			<span>

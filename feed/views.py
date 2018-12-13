@@ -33,14 +33,16 @@ class FeedsView(TemplateView):
 		self.comment_data._result_cache = None
 		self.feed_data._result_cache = None
 
-		return render(self.request, self.template_name,{
-			'feed_data': self.feed_data,
+		return render(
+			self.request, 
+			self.template_name,
+			{'feed_data': self.feed_data,
 			'comment_data':self.comment_data,
 			'user_data':self.request.user,
 			'comment_form':self.comment_form,
 			'feed_form':self.feed_form,
-			'picture_form':self.picture_form,
-		})
+			'picture_form':self.picture_form,}
+		)
 
 	def post(self,request, *args, **kwargs):
 		form = CommentForm(self.request.POST)	
@@ -108,4 +110,30 @@ class LikeView(View):
 			return JsonResponse(serialized, safe=False)
 
 
-			
+class CreatePost(View):
+	"""
+	Create Posts
+	POST - return json response to display newly created posts
+
+	"""
+	def post(self, request,*args,**kwargs):
+		caption = FeedForm(request.POST)
+		image = PicturesForm(data=request.POST,files=request.FILES)
+		
+		if caption.is_valid() and image.is_valid():
+			caption = caption.save(commit=False)
+			image = image.save(commit=False)
+			image.user_id = request.user.id
+			image.save()
+			caption.user_id = request.user.id
+			caption.images_id = image.id
+			caption.save()
+			serialize = FeedSerialize(caption)
+			new_post = serialize.data
+			new_post['username'] = caption.user.username
+			new_post['image'] = caption.images.image.url
+			try:
+				new_post['prof_pic'] = caption.user.account.prof_pic.url
+				return JsonResponse(new_post, safe=False)
+			except:
+				return JsonResponse(new_post, safe=False)

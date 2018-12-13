@@ -7,7 +7,7 @@ class PicturesForm(forms.ModelForm):
 	Picture Form, add picture to gallery or use picture as post
 
 	"""
-	image = forms.ImageField()
+	image = forms.FileField()
 
 	class Meta:
 		model = PicturesUser
