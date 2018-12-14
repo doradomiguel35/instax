@@ -7,9 +7,8 @@ from django.contrib.auth.models import User
 from .models import Feeds,Comments,LikesUser
 from accounts.models import Account,Followers
 from user_profile.models import PicturesUser
-from feed.forms import CommentForm,FeedForm
+from feed.forms import CommentForm,FeedForm,SearchForm
 from user_profile.forms import PicturesForm
-from .forms import CommentForm,LikeForm
 from .serializers import CommentSerialize,FeedSerialize,LikesSerialize
 
 
@@ -23,10 +22,10 @@ class FeedsView(TemplateView):
 	template_name = 'feed/users_page.html'
 	feed_data = Feeds.objects.all().order_by('-id')
 	comment_data = Comments.objects.all()
-	comment_form = CommentForm()
-	like_field = LikeForm()
+	comment_form = CommentForm()	
 	feed_form = FeedForm()
 	picture_form = PicturesForm()
+	search_form = SearchForm()
 	
 	
 	def get(self, *args, **kwargs):
@@ -41,7 +40,8 @@ class FeedsView(TemplateView):
 			'user_data':self.request.user,
 			'comment_form':self.comment_form,
 			'feed_form':self.feed_form,
-			'picture_form':self.picture_form,}
+			'picture_form':self.picture_form,
+			'search_form':self.search_form,}
 		)
 
 	def post(self,request, *args, **kwargs):
@@ -78,9 +78,7 @@ class LikeView(View):
 		
 		try:
 			like_user = LikesUser.objects.get(feed_id=kwargs.get('feed_id'),user_id=self.request.user.id)
-			print('try')
 			if like_user.liked == True:
-				print('if')
 				feed_data.likes-=1
 				like_user.liked = False
 				feed_data.save()
@@ -90,7 +88,6 @@ class LikeView(View):
 				return JsonResponse(serialized, safe=False)
 				
 			else:
-				print('else')
 				feed_data.likes+=1
 				like_user.liked = True
 				feed_data.save()
@@ -100,7 +97,6 @@ class LikeView(View):
 				return JsonResponse(serialized, safe=False)
 				
 		except:
-			print('exception')
 			like_user = LikesUser(feed_id=kwargs.get('feed_id'),user_id=self.request.user.id,liked=True)
 			feed_data.likes+=1
 			like_user.save()
@@ -137,3 +133,18 @@ class CreatePost(View):
 				return JsonResponse(new_post, safe=False)
 			except:
 				return JsonResponse(new_post, safe=False)
+
+
+class Search(View):
+	"""
+	Search
+	GET - search for users, return json response to acquire searched user
+
+	"""
+	def get(self,request,*args,**kwargs):
+		search_form = SearchForm(self.request.GET)
+
+		if search_form.is_valid():
+			search_username = Account.objects.filter(user__username=search_form.cleaned_data['search']).values('user__username','prof_pic')
+			serialize = {'data': list(search_username)}
+			return JsonResponse(serialize,safe=False)

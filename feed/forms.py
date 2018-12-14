@@ -26,20 +26,6 @@ class CommentForm(forms.ModelForm):
 		return self.cleaned_data
 
 
-class LikeForm(forms.ModelForm):
-	"""
-	Like Form, like on posts
-	"""
-	liked = forms.BooleanField(label='',widget=forms.CheckboxInput(attrs={
-		'id':'like-button',
-		'type':'checkbox',
-		}))
-
-	class Meta:
-		model = LikesUser
-		fields = ('liked',)
-
-
 class FeedForm(forms.ModelForm):
 	"""
 	Post Form, create posts
@@ -60,4 +46,17 @@ class FeedForm(forms.ModelForm):
 	def clean(self):
 		return self.cleaned_data
 
+
+class SearchForm(forms.Form):
+	"""
+	Search form, search for users
+	"""
+	search = forms.CharField(max_length=100, label='',required=False,widget=forms.TextInput(attrs={
+		'id':'search-field',
+		'type': 'text',
+		'placeholder': 'Search',
+		'style': 'text-align: center; width: 297px;margin-left:20px;',
+		}))
+
+		    	
 

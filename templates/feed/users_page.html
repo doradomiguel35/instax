@@ -16,6 +16,14 @@
 
 {{ user_data.username }}
 
+{% block search %}
+	<form method='get' action="{% url 'feeds:search' %}" class="search">
+		{% csrf_token %}
+		<!-- <input id="input-field" type="text" placeholder='Search' style="text-align: center"> -->
+		{{ search_form.search }}
+	</form>
+{% endblock search %}
+
 {% block content %}
 
 <div class="main-body">
@@ -126,170 +134,4 @@
 	
 	{% endfor %}
 </div>
-<script>
-	function comment(event){
-		event.preventDefault();
-		var url = $(this).attr('action');
-		$.ajax({
-			url: url,
-			type: "POST",
-			data: $(this).serialize(),
-			success: function(data){
-				console.log('executed');
-				$('.insertComment'+data.post_id).prepend(`
-					<div class="padding-comments">
-						<span class="comment-user" id="comment-user">
-							<a href="#" style="color: black;">`
-							+data.username+ `|
-							</a> 
-						</span>
-						<span class="comment">`
-						+data.comment+
-						`</span>
-						<br>
-						 <h4 style="font-size: 12px;">
-						 	Commented on:` +data.commented_at+
-						`</h4>
-					</div>`);
-				$('.text-box').val('');
-			}
-		});
-	}
-
-	function like(event){
-		event.preventDefault();
-		console.log('liked');
-		var url = $(this).attr('action');
-		$.ajax({
-			url: url,
-			type: "POST",
-			data: $(this).serialize(),
-			success: function(data){
-				$('#like-no'+data.id).replaceWith(`
-					<h4 class='post' id='like-no`+data.id+`' style="margin-right: 100px;">`+
-						data.likes+` Likes
-					</h4>`);
-			}
-		});
-	}
-
-	function likers(event){
-		event.preventDefault();
-		var url = $(this).attr('action')
-		$('.overlay').addClass('active');
-		
-		$.ajax({
-			url:url,
-			data: $(this).serialize(),
-			success: function(data){
-				var prof_pic;
-				for(var i = 0; i < data['data'].length; i++){
-					if(data['data'][i].user__account__prof_pic === ""){
-						prof_pic = `<img src="/static/user_profile/img/blank_picture.png" style="border-radius:50%;width:15%;margin-right:10px;">`;
-					}
-					else{
-						prof_pic = `<img src="/media/`+data['data'][i].user__account__prof_pic+`" style="border-radius:50%;width:15%;margin-right:10px;">`;
-					}
-
-					$('.content').append(`
-						<span style="font-size:20px;">`
-							+prof_pic+
-							data['data'][i].user__username+
-						`</span>
-						<br><br>`);
-				}
-			}
-		});
-
-		$('.close').on('click',function(event){
-			$('.overlay').removeClass('active');
-			$('.content').empty();
-		});
-	}
-
-	$('.comment-form').submit(comment);
-	$('.like').submit(like);
-	$('.likers').on('click',likers);
-
-	$('.create-post').submit(function(event){
-		event.preventDefault();
-		console.log('clicked');
-		var url = $(this).attr('action');
-		var data = new FormData(this);
-		console.log(data);
-		$.ajax({
-			url: url,
-			type: 'POST',
-			data: data,
-			cache: false,
-			contentType: false,
-			processData: false,
-			success: function(data){
-				console.log(data);
-				var prof_pic;
-				if(data.prof_pic === undefined){
-					prof_pic = "/static/user_profile/img/blank_picture.png"
-				}
-				else{
-					prof_pic = data.prof_pic;
-				}
-				$('#new-post').prepend(`
-					<div id="nav-container">
-						<div id="navbar">
-							<div id="left">
-								<a href="/profile/"`+data.username+`>
-									<img src=`+prof_pic+` class="feed-prof-pic" >
-								</a>
-								<h4 class="post" id='feed-prof-username'>
-									<a href="/profile/`+data.username+`">`
-									+data.username+
-									`</a>
-								</h4>	
-							</div>
-							<br><br>
-							<div class="padding">
-								<h4 class="caption" id="feed-caption">`
-								+data.caption+
-								`</h4>
-							</div>
-							<div id='center'>
-								<a href="#"><img src="`+data.image+`" width="700px" height="500px"></a>
-							</div>
-							<br><br>
-							<div id="left">
-								<form method="post" action="/feeds/like/`+data.id+`/" class="new-like">{% csrf_token %}
-									<button id="like-btn" class="btn btn-primary btn-lg btn-block register-button" type="submit">Like</button>
-								</form>
-								<h4 class="post" id="like-no`+data.id+`" style="margin-right: 100px;">`
-									+data.likes+` Likes
-								</h4>
-								<form method="get" action="/feeds/like/`+data.id+`" class="new-likers">
-									<button style="margin-right: 10px;">View who liked this...</button>
-								</form>	
-							</div>
-							<br><br><br><br><br><br>
-							<div class="comments">
-							<div class="insertComment`+data.id+`" ></div>
-							</div>
-							<form method="post" action="/feeds/comment/`+data.id+`/" class='new-comment-form'>{% csrf_token %}
-								{{ comment_form.comment|add_class:'text-box' }}
-								<input id='create-comment' class="btn btn-primary btn-lg btn-block login-button" type="submit" value="Comment" />
-							</form>
-						</div>
-					</div>
-				`);
-				$('#create-caption-field').val("");	
-				$('#id_image').val("");
-				$('.new-comment-form').submit(comment);
-				$('.new-like').submit(like);
-				$('.new-likers').on('click',likers);
-			}
-
-		}).done();
-		
-	});
-
-
-</script>
-
 {% endblock content %}

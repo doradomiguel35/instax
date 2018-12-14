@@ -43,3 +43,4 @@ class LikesSerialize(serializers.ModelSerializer):
 			'feed_id',
 			'user_id',
 			'liked')
+
