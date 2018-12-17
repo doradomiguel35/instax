@@ -20,7 +20,6 @@ class FeedsView(TemplateView):
 
 	"""
 	template_name = 'feed/users_page.html'
-	feed_data = Feeds.objects.all().order_by('-id')
 	comment_data = Comments.objects.all()
 	comment_form = CommentForm()	
 	feed_form = FeedForm()
@@ -28,14 +27,16 @@ class FeedsView(TemplateView):
 	search_form = SearchForm()
 	
 	
-	def get(self, *args, **kwargs):
+	def get(self,request, *args, **kwargs):
+		followers = Followers.objects.filter(follow=True,follower_username=request.user.username).values('followed_user_id')
+		import pdb;pdb.set_trace()
+		feed_data = Feeds.objects.filter(user_id__in=followers)
+		feed_data._result_cache = None
 		self.comment_data._result_cache = None
-		self.feed_data._result_cache = None
-
 		return render(
-			self.request, 
+			request, 
 			self.template_name,
-			{'feed_data': self.feed_data,
+			{'feed_data': feed_data,
 			'comment_data':self.comment_data,
 			'user_data':self.request.user,
 			'comment_form':self.comment_form,

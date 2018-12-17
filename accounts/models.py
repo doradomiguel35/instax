@@ -18,6 +18,8 @@ class Followers(models.Model):
 	
 	"""
 
+	# followed_user = models.ManyToManyField(User)
+	# follower_username = models.ForeignKey(User, related_name='user', on_delete=models.CASCADE)
 	followed_user = models.ForeignKey(User,on_delete=models.CASCADE)
 	follower_username = models.CharField(max_length=100)
 	follow = models.BooleanField(default=False)
