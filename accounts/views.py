@@ -7,6 +7,7 @@ from feed.models import Feeds,Comments,LikesUser
 from django.views.generic import TemplateView
 from feed.forms import CommentForm,FeedForm
 from user_profile.forms import PicturesForm
+from feed.forms import SearchForm
 
 # Create your views here.
 class RegisterView(TemplateView):
@@ -17,12 +18,13 @@ class RegisterView(TemplateView):
 
 	template_name = 'accounts/register/register.html'
 	context = User.objects.all()
-	feed_data = Feeds.objects.all()
+	feed_data = Feeds.objects.all().order_by('-id')
 	comment_data = Comments.objects.all()
 	get_forms = RegisterValidation()
 	comment_form = CommentForm()
 	feed_form = FeedForm()
 	picture_form = PicturesForm()
+	search_form = SearchForm()
 	
 	def get(self, *args, **kwargs):
 		return render(self.request,self.template_name, {
@@ -44,6 +46,8 @@ class RegisterView(TemplateView):
 				'comment_form':self.comment_form,
 				'feed_form':self.feed_form,
 				'picture_form':self.picture_form,
+				'search_form':self.search_form,
+				'current_user':self.request.user
 			})
 
 		return render(request,self.template_name,{'forms':form}) 
@@ -56,12 +60,13 @@ class LoginView(TemplateView):
 	"""
 
 	template_name = 'accounts/login/login.html'
-	feed_data = Feeds.objects.all()
+	feed_data = Feeds.objects.all().order_by('-id')
 	comment_data = Comments.objects.all()
 	get_forms = LoginValidation()
 	comment_form = CommentForm()
 	feed_form = FeedForm()
 	picture_form = PicturesForm()	
+	search_form = SearchForm()
 	
 	def get(self,*args,**kwargs):
 		return render(self.request, self.template_name,{'forms':self.get_forms})
@@ -79,5 +84,7 @@ class LoginView(TemplateView):
 				'comment_form':self.comment_form,
 				'feed_form':self.feed_form,
 				'picture_form':self.picture_form,
+				'search_form':self.search_form,
+				'current_user':self.request.user
 			})
 		return render(request, self.template_name,{'forms':forms })

@@ -18,7 +18,8 @@ class Followers(models.Model):
 	
 	"""
 
-	user = models.ForeignKey(User,on_delete=models.CASCADE)
+	followed_user = models.ForeignKey(User,on_delete=models.CASCADE)
+	follower_username = models.CharField(max_length=100)
 	follow = models.BooleanField(default=False)
 
 

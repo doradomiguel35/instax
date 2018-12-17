@@ -41,7 +41,8 @@ class FeedsView(TemplateView):
 			'comment_form':self.comment_form,
 			'feed_form':self.feed_form,
 			'picture_form':self.picture_form,
-			'search_form':self.search_form,}
+			'search_form':self.search_form,
+			'current_user':self.request.user,}
 		)
 
 	def post(self,request, *args, **kwargs):
@@ -68,7 +69,13 @@ class LikeView(View):
 
 	"""
 	def get(self,request,*args,**kwargs):
-		likers = LikesUser.objects.filter(feed_id=kwargs.get('feed_id'),liked=True).values('user__username','user__account__prof_pic')
+		likers = LikesUser.objects.filter(
+				feed_id=kwargs.get('feed_id'),
+				liked=True
+			).values(
+				'user__username',
+				'user__account__prof_pic')
+		
 		serializer = {'data': list(likers)}
 		return JsonResponse(serializer, safe=False)
 		

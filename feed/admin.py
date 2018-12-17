@@ -28,3 +28,4 @@ class LikesAdmin(admin.ModelAdmin):
 admin.site.register(Feeds,FeedAdmin)
 admin.site.register(Comments,CommentAdmin)
 admin.site.register(LikesUser,LikesAdmin)
+
