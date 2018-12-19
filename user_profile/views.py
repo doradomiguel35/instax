@@ -1,10 +1,12 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView,View
 from django.core import serializers
 from django.http import JsonResponse
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 from accounts.models import Account,Followers
 from user_profile.models import PicturesUser
-from django.contrib.auth.models import User
 from accounts.serializers import FollowerSerializer
 from .serializers import UserSerialize,ProfPicSerialize
 from feed.forms import SearchForm
@@ -27,7 +29,7 @@ class ProfileView(TemplateView):
 
 		current_user = self.request.user
 		
-		account = User.objects.get(username=username)
+		account = User.objects.get(username=request.user)
 		
 		pictures = PicturesUser.objects.filter(user_id=account.id)
 		
@@ -103,9 +105,10 @@ class ProfileView(TemplateView):
 			if account_follow.get('follow') == True:
 				follow_account.followers-=1
 				following_user.following-=1
-				print('if')
+
 				unfollow = Followers.objects.get(followed_user_id=user.id)
 				unfollow.follow = False
+
 				unfollow.save()
 				follow_account.save()
 				following_user.save()
@@ -120,7 +123,7 @@ class ProfileView(TemplateView):
 			else:
 				follow_account.followers+=1
 				following_user.following+=1
-				print('else')
+
 				follow = Followers.objects.get(followed_user_id=user.id)
 				follow.follow = True
 				follow_account.save()
@@ -137,8 +140,13 @@ class ProfileView(TemplateView):
 		except:
 			follow_account.followers+=1
 			following_user.following+=1
-			print('except')
-			follow = Followers(followed_user_id=user.id,follower_username=self.request.user,follow=True)
+
+			follow = Followers(
+				followed_user_id=user.id,
+				follower_username=self.request.user,
+				follow=True
+			)
+
 			follow.save()
 			follow_account.save()
 			following_user.save()
@@ -161,8 +169,11 @@ class EditProfile(TemplateView):
 	def get(self,request,*args,**kwargs):
 		search_form = SearchForm()
 		edit_form = EditProfileForm(instance=request.user)
+		change_password_form = PasswordChangeForm(user=request.user)
 		account = Account.objects.get(user_id=request.user.id)
 		prof_pic_form = ProfPicForm()
+		
+
 		try:
 			account.prof_pic.url
 			prof_pic = account.prof_pic.url
@@ -175,39 +186,104 @@ class EditProfile(TemplateView):
 			'search_form':search_form,
 			'edit_form': edit_form,
 			'prof_pic_form':prof_pic_form,
+			'change_password_form':change_password_form,
 			'prof_pic':prof_pic,
-		}
 
+		}
+		
 		return render(request,self.template_name,package)
 
 	def post(self,request,*args,**kwargs):
 		user = User.objects.get(username=request.user.username)
 		account_user = Account.objects.get(user_id=request.user.id)
-
+		search_form = SearchForm()
 		edit = EditProfileForm(request.POST,instance=request.user)
-		prof_pic = ProfPicForm(data=request.POST,files=request.FILES,instance=account_user)
+		prof_pic_form = ProfPicForm(data=request.POST,files=request.FILES,instance=account_user)
 		
-		if edit.is_valid() and prof_pic.is_valid():
+		try:
+			account.prof_pic.url
+			prof_pic = account.prof_pic.url
+		except:
+			prof_pic = False
+
+		if edit.is_valid() and prof_pic_form.is_valid():
 			edit.save()
-			prof_pic.save()
+			prof_pic_form.save()
 			serialize_edit =UserSerialize(User.objects.get(username=request.user.username))
 			serialize_pic = ProfPicSerialize(Account.objects.get(user_id=request.user.id))
 			data = {
 				'profile': serialize_edit.data,
 				'prof_account': serialize_pic.data
 			}
-			
+
 			return JsonResponse(data, safe=False)
+
+		else:
+			package = {
+				'account_user':Account.objects.get(user_id=request.user.id),
+				'current_user':request.user,
+				'search_form':search_form,
+				'edit_form': edit,
+				'prof_pic_form':prof_pic_form,
+				'prof_pic':prof_pic,
+			}
+			import pdb; pdb.set_trace()
+			return JsonResponse({'errors':edit.errors},safe=False)
+
+
+class ChangePassword(View):
+	"""
+	Change Password
+
+	"""
+	template_name = "user_profile/edit_profile.html"
+	
+	def post(self,request,*args,**kwargs):
+		search_form = SearchForm()
+		edit_form = EditProfileForm(instance=request.user)
+		change_password_form = PasswordChangeForm(user=request.user)
+		account = Account.objects.get(user_id=request.user.id)
+		prof_pic_form = ProfPicForm()
+		
+		password_form = PasswordChangeForm(data=request.POST,user=request.user)
+
+		try:
+			account.prof_pic.url
+			prof_pic = account.prof_pic.url
+		except:
+			prof_pic = False
 
 		package = {
 			'account_user':account,
 			'current_user':request.user,
 			'search_form':search_form,
 			'edit_form': edit_form,
+			'change_password_form': password_form,
 			'prof_pic_form':prof_pic_form,
 			'prof_pic':prof_pic,
 		}
-		return render(request,self.template_name,package)
+
+		if password_form.is_valid():
+			password_form.save()
+			update_session_auth_hash(request,password_form.user)
+			print('if')
+			package['success'] = "New Password Set"
+			import pdb; pdb.set_trace()
+			return render(request,self.template_name,package)
+
+
+		else:
+			print('else')
+			package['errors'] = password_form.errors
+			package['pic_errors'] = prof_pic_form.errors
+			import pdb;pdb.set_trace()
+			return render(request,self.template_name,package)
+
+
+
+
+
+
 
 		
 

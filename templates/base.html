@@ -183,8 +183,8 @@ function create_post(event){
 								{% csrf_token %}
 								<button id="like-btn" class="btn btn-primary btn-lg btn-block register-button" type="submit">Like</button>
 							</form>
-							<h4 class="post" id="like-no`+data.id+`" style="margin-right: 100px;">`
-								+data.likes+` Likes
+							<h4 class="post" id="like-no`+data.id+`" style="margin-right: 100px;">
+								`+data.likes+` Likes
 							</h4>
 							<form method="get" action="/feeds/like/`+data.id+`" class="new-likers">
 								<button style="margin-right: 10px;">View who liked this...</button>
@@ -202,6 +202,7 @@ function create_post(event){
 					</div>
 				</div>
 			`);
+
 			$('#create-caption-field').val("");	
 			$('#id_image').val("");
 			$('.new-comment-form').submit(comment);
@@ -296,7 +297,7 @@ function follow(event){
 	});
 }
 
-$('.edit_profile').submit(function(event){
+function edit_profile(event){
 	event.preventDefault();
 	console.log('click');
 	var url = $(this).attr('action');
@@ -309,15 +310,76 @@ $('.edit_profile').submit(function(event){
 		contentType: false,
 		processData: false,
 		success: function(data){
-			$('#display_pic').replaceWith(`
-				<img src="`+data.prof_account.prof_pic+`" style="border-radius: 50%; margin-top: 40px; width: 150px;" id='display_pic'>
-			`);
+			console.log(data);
+
+			if (data.errors){
+				$('#edit_prof_notif').replaceWith(`
+					<div id="edit_prof_notif"></div>
+				`);
+
+				for(var i = 0;i < data.errors.username.length;i++){
+					$('#errors').append(`
+						<h4>`+ data.errors.username[i]+`</h4> 
+					`);	
+				}
+			}
+
+			else{
+				
+				$('#display_pic').replaceWith(`
+					<img src="`+data.prof_account.prof_pic+`" style="border-radius: 50%; margin-top: 40px; width: 150px;" id='display_pic'>
+				`);
+
+				$('#edit_prof_notif').replaceWith(`
+					<div id="edit_prof_notif">
+						<h4> Profile edited </h4>				
+					</div>
+				`);
+
+				$('#id_first_name').replaceWith(`
+					<input type="text" name="first_name" value="`+ data.profile.first_name +`" placeholder="Enter your First Name" maxlength="255" class="form-control" required="" id="id_first_name">
+				`);
+				
+				$('#id_last_name').replaceWith(`
+					<input type="text" name="last_name" value="`+ data.profile.last_name +`" placeholder="Enter your Last Name" maxlength="255" class="form-control" required="" id="id_last_name">
+				`);
+
+				$('#id_username').replaceWith(`
+					<input type="text" name="username" value="`+ data.profile.username +`" placeholder="Enter your Username" maxlength="255" class="form-control" required="" id="id_username">
+				`);
+
+				$('#id_email').replaceWith(`
+					<input type="text" name="email" value="`+ data.profile.email +`" placeholder="Enter your Email Address" class="form-control" required="" id="id_email">
+				`);
+			}
+
+
+
 		}
 
 	});
+}
 
-});
+// $('.change_pass').submit(function(event){
+// 	event.preventDefault();
+// 	var url = $(this).attr('action');
+// 	$.ajax({
+// 		url:url,
+// 		type: 'POST',
+// 		data: $(this).serialize(),
+// 		success: function(data){
+// 			console.log(data);	
+// 			$('id_old_password').val('');
+// 			$('id_new_password1').val('');
+// 			$('id_new_password2').val('');
+// 			$('#pass_notif').replaceWith(`
+				
+// 			`);
+// 		}
+// 	});
+// });
 
+$('.edit_profile').submit(edit_profile);
 $('.comment-form').submit(comment);
 $('.like').submit(like);
 $('.likers').on('click',likers);

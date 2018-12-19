@@ -33,14 +33,14 @@
 	
 	<div id="Edit" class="tabcontent">
 		{% if prof_pic != False %}
-		<img src="{{ account_user.prof_pic.url }}" style="border-radius: 50%; margin-top: 40px; width: 150px;">
+		<img src="{{ account_user.prof_pic.url }}" style="border-radius: 50%; margin-top: 40px; width: 150px;" id='display_pic'>
 		{% else %}
-		<img src="{% static 'user_profile/img/blank_picture.png' %}" style="border-radius: 50%; margin-top: 40px; width: 150px;">
+		<img src="{% static 'user_profile/img/blank_picture.png' %}" style="border-radius: 50%; margin-top: 40px; width: 150px;" id='display_pic'>
 		{% endif %}
 		<br><br>
 		<form action="{% url 'profile:edit' %}" method="post" class="edit_profile" enctype="multipart/form-data">
 		{% csrf_token %}
-			<h4 class="post">Profile Picture</h4>
+			<h4 class="post">Profile Picture</h4>	
 			{% render_field prof_pic_form.prof_pic class="form-control" %}
 			<br>
 			<h4 class="post">First Name</h4> 
@@ -54,11 +54,10 @@
 			<br>
 			<h4 class="post">Email Address</h4> 
 			{% render_field edit_form.email class="form-control"  %}
-			<br>
+			<br><br><br>
 			
-			{{ edit_form.errors.email}}
-			{{ edit_form.errors.username }}
-			{{ prof_pic_form.errors }}
+			<div id="edit_prof_notif"></div>
+			<div id='errors'></div>
 
 			<button id='edit-btn' class="btn btn-primary btn-lg btn-block register-button" type="submit" style="width: 100px;margin-left: 362px;">
 				Submit
@@ -67,9 +66,46 @@
 	</div>
 
 	<div id="Change" class="tabcontent">
-		
-	</div>
+		<br><br>
+		<form action="{% url 'profile:change_password' %}" method="post" class="change_pass">
+			<h4 class="post">Old Password</h4>
+			{% csrf_token %}
+				{% render_field change_password_form.old_password class="form-control" %}
+				<br>
+				<h4 class="post">New Password</h4>
+				{% render_field change_password_form.new_password1 class="form-control" %}
+				<br>
+				<h4 class="post">Confirm Password</h4>
+				{% render_field change_password_form.new_password2 class="form-control" %}
+				<br>
+				{% for error in errors.old_password %}
+					<h4>{{ error }}</h4>
+				{% endfor %}
+				{% for error in errors.new_password2 %}
+					<h4>{{ error }}</h4>
+				{% endfor %}
 
+				<h4> {{ success }} </h4>
+				<button id='change-pass-btn' class="btn btn-primary btn-lg btn-block register-button" type="submit" style="width: 100px;margin-left: 362px;">
+					Submit
+				</button>
+		</form>
+	</div>
+	
+	<div id="Logout" class="tabcontent">
+		{% if prof_pic != False %}
+		<img src="{{ account_user.prof_pic.url }}" style="border-radius: 50%; margin-top: 40px; width: 150px;" id='display_pic'>
+		{% else %}
+		<img src="{% static 'user_profile/img/blank_picture.png' %}" style="border-radius: 50%; margin-top: 40px; width: 150px;" id='display_pic'>
+		{% endif %}
+		<br><br>
+		<h4 class="post">Are you sure you want to log out?</h4>
+		<form action="" method="get">
+			<button id='change-pass-btn' class="btn btn-primary btn-lg btn-block register-button" type="submit" style="width: 100px;margin-left: 180px;">
+				Logout
+			</button>
+		</form>
+	</div>
 </div>
 
 {% endblock content %}
