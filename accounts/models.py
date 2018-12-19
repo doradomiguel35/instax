@@ -9,6 +9,7 @@ class Account(models.Model):
 	"""
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	followers = models.IntegerField(default=0)
+	following = models.IntegerField(default=0)
 	prof_pic = models.ImageField(upload_to='prof_pic',blank=True,null=True)
 
 

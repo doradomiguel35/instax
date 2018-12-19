@@ -8,7 +8,6 @@
 {% block search %}
 	<form method='get' action="{% url 'feeds:search' %}" class="search">
 		{% csrf_token %}
-		<!-- <input id="input-field" type="text" placeholder='Search' style="text-align: center"> -->
 		{{ search_form.search }}
 	</form>
 {% endblock search %}
@@ -38,7 +37,8 @@
 		<div id="center">
 			<div class="padding" style="margin-left: 200px; margin-top: : 20px;">
 				<h4 class="post" style="margin-bottom: : 20px;text-align: left;font-size: 40px;"> {{ user_data.username }} </h4>
-				<h4 id='no-followers' class="post" style="text-align: left;font-size: 20px;">  Followers {{ user_data.account.followers }}</h4><br>
+				<div id='no-followers' class="post" style="text-align: left;font-size: 20px;display: inline; float: left;">  Followers {{ user_data.account.followers }} &nbsp&nbsp&nbsp&nbsp&nbsp</div>
+				<div class="post" style="text-align: left;font-size: 20px;display:inline;float: left;"> Following {{ user_data.account.following }} </div><br><br>
 				<h4 class="post" style="text-align: left;font-size: 25px"> {{ user_data.first_name }} {{ user_data.last_name}}</h4>
 				
 			</div>
@@ -62,9 +62,10 @@
 		</div>
 		{% else %}
 		<div id="left">
-			<button class="btn btn-primary btn-lg btn-block register-button" type="submit" style="width: 130px;margin-left: 35px;">
-				Edit Profile
-			</button>
+			<a href="{% url 'profile:edit' %}" class="btn btn-primary btn-lg btn-block register-button"  style="width: 180px;margin-left: 15px;">
+				Account Settings
+			</a>
+
 		</div>
 		{% endif %}
 		<br><br><br><br><br>	

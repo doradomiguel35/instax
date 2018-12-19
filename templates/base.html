@@ -47,6 +47,8 @@
 			</div>
 		</div>
 
+{% block tabscript %}
+{% endblock tabscript %}
 
 <script>
 	
@@ -259,7 +261,7 @@ function search(event){
 	
 }
 
-$('.follow').submit(function(event){
+function follow(event){
 	event.preventDefault();
 	console.log('clicked');
 	var url = $(this).attr('action');
@@ -284,22 +286,46 @@ $('.follow').submit(function(event){
 			}
 
 			$('#no-followers').replaceWith(`
-				<h4 id='no-followers' class="post" style="text-align: left;font-size: 20px;">
-					  Followers `+ data.followers+` 
-				</h4>
+				<div id='no-followers' class="post" style="text-align: left;font-size: 20px;display: inline; float: left;">
+					  Followers `+ data.followers+`&nbsp&nbsp&nbsp&nbsp&nbsp 
+				</div>
 				`);
 
 		
 		}
 	});
+}
+
+$('.edit_profile').submit(function(event){
+	event.preventDefault();
+	console.log('click');
+	var url = $(this).attr('action');
+	var data = new FormData(this);
+	$.ajax({
+		url: url,
+		type: 'POST',
+		data: data,
+		cache: false,
+		contentType: false,
+		processData: false,
+		success: function(data){
+			$('#display_pic').replaceWith(`
+				<img src="`+data.prof_account.prof_pic+`" style="border-radius: 50%; margin-top: 40px; width: 150px;" id='display_pic'>
+			`);
+		}
+
+	});
+
 });
 
 $('.comment-form').submit(comment);
 $('.like').submit(like);
 $('.likers').on('click',likers);
 $('.create-post').submit(create_post);
-
 $('.search').submit(search);
+$('.follow').submit();
+
+
 </script>
 </body>
 </html>

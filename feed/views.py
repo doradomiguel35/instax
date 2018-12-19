@@ -20,7 +20,6 @@ class FeedsView(TemplateView):
 
 	"""
 	template_name = 'feed/users_page.html'
-	comment_data = Comments.objects.all()
 	comment_form = CommentForm()	
 	feed_form = FeedForm()
 	picture_form = PicturesForm()
@@ -29,32 +28,45 @@ class FeedsView(TemplateView):
 	
 	def get(self,request, *args, **kwargs):
 		followers = Followers.objects.filter(follow=True,follower_username=request.user.username).values('followed_user_id')
-		import pdb;pdb.set_trace()
-		feed_data = Feeds.objects.filter(user_id__in=followers)
+		
+		feed_data = Feeds.objects.filter(user_id__in=followers) | Feeds.objects.filter(user_id=request.user.id)
+	
+		comment_data = Comments.objects.filter(post_id__in=feed_data.values('id'))
+			
 		feed_data._result_cache = None
-		self.comment_data._result_cache = None
-		return render(
-			request, 
-			self.template_name,
-			{'feed_data': feed_data,
-			'comment_data':self.comment_data,
-			'user_data':self.request.user,
+		
+		comment_data._result_cache = None
+		
+		package = {
+			'feed_data': feed_data.order_by('-id'),
+			'comment_data':comment_data,
+			'user_data':request.user,
 			'comment_form':self.comment_form,
 			'feed_form':self.feed_form,
 			'picture_form':self.picture_form,
 			'search_form':self.search_form,
-			'current_user':self.request.user,}
+			'current_user':self.request.user,
+		}
+		
+		return render(
+			request, 
+			self.template_name,
+			package
 		)
 
 	def post(self,request, *args, **kwargs):
 		form = CommentForm(self.request.POST)	
+		
 		feed = Feeds.objects.get(id=kwargs.get('feed_id'))
+		
 		if form.is_valid():
+			
 			comment = form.save(commit=False)
 			comment.post_id = feed.id
 			comment.user_id = self.request.user.id
 			comment.save()
 			comment.refresh_from_db()
+			
 			serializer = CommentSerialize(Comments.objects.get(id=comment.id))
 			serialized = serializer.data
 			serialized['username'] = self.request.user.username
@@ -69,6 +81,7 @@ class LikeView(View):
 	POST - each user can like a post once, if a post is already liked, then the user clicked the like button, it will be unliked
 
 	"""
+
 	def get(self,request,*args,**kwargs):
 		likers = LikesUser.objects.filter(
 				feed_id=kwargs.get('feed_id'),
@@ -82,6 +95,7 @@ class LikeView(View):
 		
 
 	def post(self,request,*args,**kwargs):
+
 		feed_data = Feeds.objects.get(id=kwargs.get('feed_id'))
 		
 		try:
@@ -120,6 +134,7 @@ class CreatePost(View):
 	POST - return json response to display newly created posts
 
 	"""
+
 	def post(self, request,*args,**kwargs):
 		caption = FeedForm(request.POST)
 		image = PicturesForm(data=request.POST,files=request.FILES)
@@ -149,10 +164,12 @@ class Search(View):
 	GET - search for users, return json response to acquire searched user
 
 	"""
+
 	def get(self,request,*args,**kwargs):
 		search_form = SearchForm(self.request.GET)
 
 		if search_form.is_valid():
 			search_username = Account.objects.filter(user__username=search_form.cleaned_data['search']).values('user__username','prof_pic')
 			serialize = {'data': list(search_username)}
+			
 			return JsonResponse(serialize,safe=False)

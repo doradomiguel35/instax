@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from .forms import RegisterValidation,LoginValidation
-from .models import Account
+from .models import Account,Followers
 from feed.models import Feeds,Comments,LikesUser
 from django.views.generic import TemplateView
 from feed.forms import CommentForm,FeedForm
@@ -13,13 +13,13 @@ from feed.forms import SearchForm
 class RegisterView(TemplateView):
 	"""
 	Register View
-	
+	GET - get forms and render template
+	POST - register user account, get user information
 	"""
 
 	template_name = 'accounts/register/register.html'
 	context = User.objects.all()
-	feed_data = Feeds.objects.all().order_by('-id')
-	comment_data = Comments.objects.all()
+	
 	get_forms = RegisterValidation()
 	comment_form = CommentForm()
 	feed_form = FeedForm()
@@ -27,28 +27,52 @@ class RegisterView(TemplateView):
 	search_form = SearchForm()
 	
 	def get(self, *args, **kwargs):
-		return render(self.request,self.template_name, {
-			'context_data': self.context,
-			'forms':self.get_forms})
+			
+		return render(
+			self.request,
+			self.template_name, 
+			{
+				'context_data': self.context,
+				'forms':self.get_forms
+			}
+		)
 
 	def post(self,request, *args, **kwargs):
+		
 		form = RegisterValidation(request.POST)
+		
 		if form.is_valid():
 			user = form.save()
 			user.set_password(form.cleaned_data.get('password'))
 			user.save()
-			user = authenticate(username=form.cleaned_data.get('username'),password=form.cleaned_data.get('password'))
+			
+			user = authenticate(
+					username=form.cleaned_data.get('username'),
+					password=form.cleaned_data.get('password')
+			)
+
 			login(request,user)
-			return render(request,'feed/feed_user.html',{
-				'feed_data':self.feed_data,
-				'comment_data':self.comment_data,
+		
+			followers = Followers.objects.filter(follow=True,follower_username=request.user.username).values('followed_user_id')
+		
+			feed_data = Feeds.objects.filter(user_id__in=followers) | Feeds.objects.filter(user_id=request.user.id)
+			
+			comment_data = Comments.objects.filter(post_id__in=feed_data.values('id'))
+			
+			package = {
+				'feed_data':feed_data,
+				'comment_data':comment_data,
 				'user_data':self.request.user,
 				'comment_form':self.comment_form,
 				'feed_form':self.feed_form,
 				'picture_form':self.picture_form,
 				'search_form':self.search_form,
 				'current_user':self.request.user
-			})
+			}
+
+			import pdb; pdb.set_trace()
+		
+			return render(request,'feed/feed_user.html',package)
 
 		return render(request,self.template_name,{'forms':form}) 
 
@@ -60,8 +84,6 @@ class LoginView(TemplateView):
 	"""
 
 	template_name = 'accounts/login/login.html'
-	feed_data = Feeds.objects.all().order_by('-id')
-	comment_data = Comments.objects.all()
 	get_forms = LoginValidation()
 	comment_form = CommentForm()
 	feed_form = FeedForm()
@@ -69,22 +91,44 @@ class LoginView(TemplateView):
 	search_form = SearchForm()
 	
 	def get(self,*args,**kwargs):
+	
 		return render(self.request, self.template_name,{'forms':self.get_forms})
 
+	
 	def post(self,request, *args, **kwargs):
+		
 		forms = LoginValidation(self.request.POST)
+		
 		if forms.is_valid():
 			user = authenticate(username=forms.cleaned_data.get('username'),password=forms.cleaned_data.get('password'))
 			login(request,user)
-			return render(request,'feed/users_page.html',{
-				'feed_data':self.feed_data,
-				'comment_data':self.comment_data,
+			
+			followers = Followers.objects.filter(follow=True,follower_username=request.user.username).values('followed_user_id')
+		
+			feed_data = Feeds.objects.filter(user_id__in=followers) | Feeds.objects.filter(user_id=request.user.id)
+			
+			comment_data = Comments.objects.filter(post_id__in=feed_data.values('id'))
+	
+			package = {
+				'feed_data':feed_data,
+				'comment_data':comment_data,
 				'forms':forms,
-				'user_data': self.request.user,
+				'user_data': request.user,
 				'comment_form':self.comment_form,
 				'feed_form':self.feed_form,
 				'picture_form':self.picture_form,
 				'search_form':self.search_form,
-				'current_user':self.request.user
-			})
-		return render(request, self.template_name,{'forms':forms })
+				'current_user':request.user
+			}
+
+			return render(
+				request,
+				'feed/users_page.html',
+				package
+			)
+		
+		return render(
+			request, 
+			self.template_name,
+			{'forms':forms }
+		)

@@ -28,11 +28,12 @@ h1.title {
     font-weight: 400; 
 }
 
-h4.post {
+.post {
     font-size: 20px;
     font-family: 'Passion One', cursive;
     font-weight: 400;
 }
+
 
 .padding {
     padding-top: 10px;
