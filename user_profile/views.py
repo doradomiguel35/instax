@@ -33,7 +33,7 @@ class ProfileView(TemplateView):
 
 		current_user = self.request.user
 		
-		account = User.objects.get(username=request.user)
+		account = User.objects.get(username=username)
 		
 		pictures = PicturesUser.objects.filter(user_id=account.id)
 		
@@ -161,6 +161,73 @@ class ProfileView(TemplateView):
 					}
 				
 			return JsonResponse(data, safe=False)
+
+
+class UserProfileView(TemplateView):
+	template_name = 'user_profile/profile.html'
+
+	followers = Followers.objects.all()
+	
+	def get(self,request,*args,**kwargs):
+
+		current_user = self.request.user
+		
+		account = User.objects.get(username=request.user.username)
+		
+		pictures = PicturesUser.objects.filter(user_id=account.id)
+		
+		search_form = SearchForm()
+
+		try:
+			followed = Followers.objects.values(
+				'followed_user__username',
+				'follower_username',
+				'follow'
+		
+			).get(
+		
+				followed_user__username=account.username,
+				follower_username=self.request.user.username
+			)
+		
+		except:
+		
+			followed = False
+
+		
+		try: 	
+			package = {
+				'user_data':account,
+				'followers':self.followers,
+				'no_prof_pic':False,
+				'pictures':pictures,
+				'search_form':search_form,
+				'current_user':current_user,
+				'followed': followed,
+			}
+			
+			return render(
+				request,
+				self.template_name,
+				package
+			)
+
+		except:
+			package = {
+				'user_data': account,
+				'followers':self.followers,
+				'no_prof_pic':True,
+				'pictures':pictures,
+				'search_form':search_form,
+				'current_user': current_user,
+				'followed':followed,
+			}
+			
+			return render(
+				request,
+				self.template_name,
+				package
+			)
 
 
 class EditProfile(TemplateView):

@@ -31,7 +31,7 @@
 		    	<div id="search-results"></div>
 		    </div>
 		    <div id='right'>
-		      <a href="{% url 'profile:profile' current_user.username %}"><img src='http://freeiconbox.com/icon/256/23228.png' class='nav-icon'></a>
+		      <a href="{% url 'profile:profile_user' current_user.username %}"><img src='http://freeiconbox.com/icon/256/23228.png' class='nav-icon'></a>
 		    </div>
 		  </div>
 		</div>
@@ -313,6 +313,7 @@ function edit_profile(event){
 			console.log(data);
 
 			if (data.errors){
+
 				$('#edit_prof_notif').replaceWith(`
 					<div id="edit_prof_notif"></div>
 				`);
@@ -328,6 +329,10 @@ function edit_profile(event){
 				
 				$('#display_pic').replaceWith(`
 					<img src="`+data.prof_account.prof_pic+`" style="border-radius: 50%; margin-top: 40px; width: 150px;" id='display_pic'>
+				`);
+
+				$('#errors').replaceWith(`
+					<div id="errors"></div>
 				`);
 
 				$('#edit_prof_notif').replaceWith(`
@@ -385,7 +390,7 @@ $('.like').submit(like);
 $('.likers').on('click',likers);
 $('.create-post').submit(create_post);
 $('.search').submit(search);
-$('.follow').submit();
+$('.follow').submit(follow);
 
 
 </script>

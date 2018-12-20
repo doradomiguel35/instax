@@ -171,5 +171,4 @@ class Search(View):
 		if search_form.is_valid():
 			search_username = Account.objects.filter(user__username=search_form.cleaned_data['search']).values('user__username','prof_pic')
 			serialize = {'data': list(search_username)}
-			
 			return JsonResponse(serialize,safe=False)

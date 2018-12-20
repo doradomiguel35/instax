@@ -45,24 +45,31 @@ class RegisterView(TemplateView):
 			user = form.save()
 			user.set_password(form.cleaned_data.get('password'))
 			user.save()
-			
+			account = Account(user_id=user.id)
+			account.save()
+
 			user = authenticate(
 					username=form.cleaned_data.get('username'),
 					password=form.cleaned_data.get('password')
 			)
 
 			login(request,user)
-		
+			
 			followers = Followers.objects.filter(follow=True,follower_username=request.user.username).values('followed_user_id')
 		
 			feed_data = Feeds.objects.filter(user_id__in=followers) | Feeds.objects.filter(user_id=request.user.id)
 			
 			comment_data = Comments.objects.filter(post_id__in=feed_data.values('id'))
 			
+			feed_data._result_cache = None
+		
+			comment_data._result_cache = None
+
+
 			package = {
-				'feed_data':feed_data,
+				'feed_data':feed_data.order_by('-id'),
 				'comment_data':comment_data,
-				'user_data':self.request.user,
+				'user_data':request.user,
 				'comment_form':self.comment_form,
 				'feed_form':self.feed_form,
 				'picture_form':self.picture_form,
@@ -70,9 +77,8 @@ class RegisterView(TemplateView):
 				'current_user':self.request.user
 			}
 
-			import pdb; pdb.set_trace()
 		
-			return render(request,'feed/feed_user.html',package)
+			return render(request,'feed/users_page.html',package)
 
 		return render(request,self.template_name,{'forms':form}) 
 
