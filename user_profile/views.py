@@ -1,16 +1,20 @@
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
 from django.views.generic import TemplateView,View
 from django.core import serializers
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
+from django.urls import reverse
 from accounts.models import Account,Followers
 from user_profile.models import PicturesUser
 from accounts.serializers import FollowerSerializer
 from .serializers import UserSerialize,ProfPicSerialize
 from feed.forms import SearchForm
 from .forms import EditProfileForm,ProfPicForm
+from django.contrib.auth import logout
+from accounts.views import LoginView
 
 class ProfileView(TemplateView):
 	"""
@@ -227,7 +231,7 @@ class EditProfile(TemplateView):
 				'prof_pic_form':prof_pic_form,
 				'prof_pic':prof_pic,
 			}
-			import pdb; pdb.set_trace()
+
 			return JsonResponse({'errors':edit.errors},safe=False)
 
 
@@ -268,7 +272,6 @@ class ChangePassword(View):
 			update_session_auth_hash(request,password_form.user)
 			print('if')
 			package['success'] = "New Password Set"
-			import pdb; pdb.set_trace()
 			return render(request,self.template_name,package)
 
 
@@ -276,8 +279,17 @@ class ChangePassword(View):
 			print('else')
 			package['errors'] = password_form.errors
 			package['pic_errors'] = prof_pic_form.errors
-			import pdb;pdb.set_trace()
 			return render(request,self.template_name,package)
+
+
+class Logout(TemplateView):
+
+	template_name = 'accounts/login/login.html'
+
+	def get(self,request,*args,**kwargs):
+		logout(request)
+		return HttpResponseRedirect(reverse('account:login'))
+
 
 
 

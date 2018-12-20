@@ -100,7 +100,7 @@
 		{% endif %}
 		<br><br>
 		<h4 class="post">Are you sure you want to log out?</h4>
-		<form action="" method="get">
+		<form action="{% url 'profile:logout' %}" method="get">
 			<button id='change-pass-btn' class="btn btn-primary btn-lg btn-block register-button" type="submit" style="width: 100px;margin-left: 180px;">
 				Logout
 			</button>
@@ -114,14 +114,12 @@
 <script>
 function change_edit(event, option) {
 	var i, tabcontent, tablinks;
-	
-	// Get all elements with class="tabcontent" and hide them
+
 	tabcontent = document.getElementsByClassName("tabcontent");
 	for (i = 0; i < tabcontent.length; i++) {
 		tabcontent[i].style.display = "none";
 	}
 
-	// Get all elements with class="tablinks" and remove the class "active"
 	tablinks = document.getElementsByClassName("tablinks");
 		for (i = 0; i < tablinks.length; i++) {
 	tablinks[i].className = tablinks[i].className.replace(" active", "");
