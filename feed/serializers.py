@@ -28,7 +28,9 @@ class FeedSerialize(serializers.ModelSerializer):
 			'id',
 			'user_id',
 			'likes',
-			'caption')
+			'caption',
+			'archived',
+		)
 
 
 class LikesSerialize(serializers.ModelSerializer):

@@ -27,6 +27,7 @@
 	<div class="tab">
 		<button class="tablinks" onclick="change_edit(event, 'Edit')" id="defaultOpen">Edit Profile</button>
 		<button class="tablinks" onclick="change_edit(event, 'Change')">Change Password</button>
+		<button class="tablinks" onclick="change_edit(event, 'Feed Archive')">Feed Archive</button>
 		<button class="tablinks" onclick="change_edit(event, 'Logout')">Log out</button>
 
 	</div>
@@ -92,6 +93,33 @@
 		</form>
 	</div>
 	
+	<div id="Feed Archive" class="tabcontent" style="overflow-y: scroll;">
+		<br><br>
+		{% for archive in archived_post %}
+			<div id="archive-id-{{ archive.id }}" class="archive-left" style="padding-bottom: 300px;border-bottom: 1px solid #C6BEB0;border-right: 1px solid #C6BEB0;border-left: 1px solid #C6BEB0;border-top: 1px solid #C6BEB0;">
+				<form action="{% url 'profile:delete_post' archive.id %}" method="post" class="delete_archive">
+					{% csrf_token %}
+					<p align="right" style="float:right;"><button type="submit">✖</button></p>
+					
+				</form>
+				
+				<form action="{% url 'profile:unarchive' archive.id %}" method="post" class="restore_post">
+					{% csrf_token %}
+					<p align="right" style="float:right;"><button type="submit">🔙</button></p>
+				</form>
+				<span>
+					<p align="left" style="font-family: 'Passion One', cursive;float:left;">{{ archive.user.username }}| </p>
+					<p align="justify"> &nbsp {{ archive.caption }}</p>
+					
+				</span>
+				<img src=" {{ archive.images.image.url }}" width="449px" height="240px" align="left">
+				<br><br>
+			</div>
+			
+		{% endfor %}
+		
+	</div>
+
 	<div id="Logout" class="tabcontent">
 		{% if prof_pic != False %}
 		<img src="{{ account_user.prof_pic.url }}" style="border-radius: 50%; margin-top: 40px; width: 150px;" id='display_pic'>
@@ -101,7 +129,7 @@
 		<br><br>
 		<h4 class="post">Are you sure you want to log out?</h4>
 		<form action="{% url 'profile:logout' %}" method="get">
-			<button id='change-pass-btn' class="btn btn-primary btn-lg btn-block register-button" type="submit" style="width: 100px;margin-left: 180px;">
+			<button id='logout' class="btn btn-primary btn-lg btn-block register-button" type="submit" style="width: 100px;margin-left: 180px;">
 				Logout
 			</button>
 		</form>

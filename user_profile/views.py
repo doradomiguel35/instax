@@ -9,12 +9,15 @@ from django.contrib.auth import update_session_auth_hash
 from django.urls import reverse
 from accounts.models import Account,Followers
 from user_profile.models import PicturesUser
+from feed.models import Feeds
 from accounts.serializers import FollowerSerializer
+from feed.serializers import FeedSerialize
 from .serializers import UserSerialize,ProfPicSerialize
 from feed.forms import SearchForm
 from .forms import EditProfileForm,ProfPicForm
 from django.contrib.auth import logout
 from accounts.views import LoginView
+
 
 class ProfileView(TemplateView):
 	"""
@@ -55,7 +58,6 @@ class ProfileView(TemplateView):
 		
 			followed = False
 
-		
 		try: 	
 			package = {
 				'user_data':account,
@@ -164,6 +166,10 @@ class ProfileView(TemplateView):
 
 
 class UserProfileView(TemplateView):
+	"""
+	View User Profile
+	"""
+
 	template_name = 'user_profile/profile.html'
 
 	followers = Followers.objects.all()
@@ -191,7 +197,6 @@ class UserProfileView(TemplateView):
 			)
 		
 		except:
-		
 			followed = False
 
 		
@@ -242,8 +247,8 @@ class EditProfile(TemplateView):
 		edit_form = EditProfileForm(instance=request.user)
 		change_password_form = PasswordChangeForm(user=request.user)
 		account = Account.objects.get(user_id=request.user.id)
+		archived_post = Feeds.objects.filter(user_id=self.request.user.id,archived=True)
 		prof_pic_form = ProfPicForm()
-		
 
 		try:
 			account.prof_pic.url
@@ -257,9 +262,9 @@ class EditProfile(TemplateView):
 			'search_form':search_form,
 			'edit_form': edit_form,
 			'prof_pic_form':prof_pic_form,
+			'archived_post':archived_post,	
 			'change_password_form':change_password_form,
 			'prof_pic':prof_pic,
-
 		}
 		
 		return render(request,self.template_name,package)
@@ -290,15 +295,6 @@ class EditProfile(TemplateView):
 			return JsonResponse(data, safe=False)
 
 		else:
-			package = {
-				'account_user':Account.objects.get(user_id=request.user.id),
-				'current_user':request.user,
-				'search_form':search_form,
-				'edit_form': edit,
-				'prof_pic_form':prof_pic_form,
-				'prof_pic':prof_pic,
-			}
-
 			return JsonResponse({'errors':edit.errors},safe=False)
 
 
@@ -349,13 +345,47 @@ class ChangePassword(View):
 			return render(request,self.template_name,package)
 
 
-class Logout(TemplateView):
+class DeletePost(View):
+	"""
+	Delete Post
+	POST - delete post completely from archive
+	
+	"""
 
+	def post(self,request,*args,**kwargs):
+		feed = Feeds.objects.get(id=kwargs.get('feed_id'))
+		feed_serialize = FeedSerialize(feed)
+		serialized = feed_serialize.data
+		feed_delete = Feeds.objects.get(id=kwargs.get('feed_id')).delete()
+		return JsonResponse({'data': serialized},safe=False)
+
+
+class UnarchivePost(View):
+	"""
+	Unarchive Post
+	POST - remove post from archive, restore it to feeds
+	"""
+	def post(self,request,*args,**kwargs):
+		feed = Feeds.objects.get(id=kwargs.get('feed_id'))
+		feed.archived= False;
+		feed.save()
+		feed_serialize = FeedSerialize(feed)
+		serialized = feed_serialize.data
+		return JsonResponse({'data':serialized},safe=False)
+
+
+class Logout(TemplateView):
+	"""
+	Logout the user
+	GET - log out current user, redirect to login page
+	"""
 	template_name = 'accounts/login/login.html'
 
 	def get(self,request,*args,**kwargs):
 		logout(request)
 		return HttpResponseRedirect(reverse('account:login'))
+
+
 
 
 

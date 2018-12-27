@@ -29,7 +29,7 @@ class FeedsView(TemplateView):
 	def get(self,request, *args, **kwargs):
 		followers = Followers.objects.filter(follow=True,follower_username=request.user.username).values('followed_user_id')
 		
-		feed_data = Feeds.objects.filter(user_id__in=followers) | Feeds.objects.filter(user_id=request.user.id)
+		feed_data = Feeds.objects.filter(user_id__in=followers,archived=False) | Feeds.objects.filter(user_id=request.user.id,archived=False)
 	
 		comment_data = Comments.objects.filter(post_id__in=feed_data.values('id'))
 			
@@ -83,14 +83,19 @@ class LikeView(View):
 	"""
 
 	def get(self,request,*args,**kwargs):
-		likers = LikesUser.objects.filter(
-				feed_id=kwargs.get('feed_id'),
-				liked=True
-			).values(
-				'user__username',
-				'user__account__prof_pic')
+
+		feed_likers = Feeds.objects.get(
+			id=kwargs.get('feed_id')).liker.filter(
+					user_id=self.request.user.id
+				).values(
+					'user__username',
+					'prof_pic'
+				)
+
+		serializer = {
+			'data': list(feed_likers)
+		}
 		
-		serializer = {'data': list(likers)}
 		return JsonResponse(serializer, safe=False)
 		
 
@@ -99,29 +104,37 @@ class LikeView(View):
 		feed_data = Feeds.objects.get(id=kwargs.get('feed_id'))
 		
 		try:
-			like_user = LikesUser.objects.get(feed_id=kwargs.get('feed_id'),user_id=self.request.user.id)
+			like_user = LikesUser.objects.get(feed_id=kwargs.get('feed_id'))
+			account_user = Account.objects.get(user_id=self.request.user.id)
 			if like_user.liked == True:
 				feed_data.likes-=1
+				feed_data.liker.remove(account_user)
 				like_user.liked = False
-				feed_data.save()
 				like_user.save()
+				feed_data.liked.add(like_user)
+				feed_data.save()
 				feed_serializer = FeedSerialize(feed_data)
 				serialized = feed_serializer.data
 				return JsonResponse(serialized, safe=False)
 				
 			else:
 				feed_data.likes+=1
+				feed_data.liker.add(account_user)
 				like_user.liked = True
-				feed_data.save()
 				like_user.save()
+				feed_data.liked.add(like_user)
+				feed_data.save()
 				feed_serializer = FeedSerialize(feed_data)
 				serialized = feed_serializer.data
 				return JsonResponse(serialized, safe=False)
 				
 		except:
+			account_user = Account.objects.get(user_id=self.request.user.id)
 			like_user = LikesUser(feed_id=kwargs.get('feed_id'),user_id=self.request.user.id,liked=True)
 			feed_data.likes+=1
+			feed_data.liker.add(account_user)	
 			like_user.save()
+			feed_data.liked.add(like_user)
 			feed_data.save()
 			feed_serializer = FeedSerialize(feed_data)
 			serialized = feed_serializer.data
@@ -172,3 +185,28 @@ class Search(View):
 			search_username = Account.objects.filter(user__username=search_form.cleaned_data['search']).values('user__username','prof_pic')
 			serialize = {'data': list(search_username)}
 			return JsonResponse(serialize,safe=False)
+
+
+class ArchivePost(View):
+	"""
+	POST - archive post, not completely deleting the post, instead view archived posts in edit profile menu
+	"""
+
+	def post(self,request,*args,**kwargs):
+		feed = Feeds.objects.get(id=kwargs.get('feed_id'))
+		feed.archived = True
+		feed.save()
+		feed_serialize = FeedSerialize(feed)
+		serialized = feed_serialize.data
+		return JsonResponse(serialized,safe=False)
+
+
+class EditPost(View):
+	"""
+	GET - get edit forms, to display in template view
+	POST - save recently edited object, returns JSON response to display in template view
+	"""
+
+	def get(self, request, *args, **kwargs):
+		edit_forms = FeedForm()
+		

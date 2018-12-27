@@ -10,6 +10,33 @@ a {
   color: black;
 }
 
+div.scrollmenu {
+  background-color: #333;
+  overflow-y: scroll;
+  white-space: nowrap;
+}
+
+div.scrollmenu a {
+  display: inline-block;
+  color: white;
+  text-align: center;
+  padding: 14px;
+  text-decoration: none;
+}
+
+div.scrollmenu a:hover {
+  background-color: #777;
+}
+
+.buttontext {
+  width: 50px;
+  overflow: hidden;
+  white-space: nowrap;
+  display: block;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
 #nav-container {
   width: 100%;
   text-align: center;
@@ -248,3 +275,29 @@ body, html{
   background: white;
 }
 
+.archive-left{
+  float: left;
+  width: 450px;
+  height: 20px;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}

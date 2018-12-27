@@ -108,13 +108,14 @@ function likers(event){
 		url:url,
 		data: $(this).serialize(),
 		success: function(data){
+			console.log(data);
 			var prof_pic;
 			for(var i = 0; i < data['data'].length; i++){
-				if(data['data'][i].user__account__prof_pic === ""){
+				if(data['data'][i].prof_pic === ""){
 					prof_pic = `<img src="/static/user_profile/img/blank_picture.png" style="border-radius:50%;width:15%;margin-right:10px;">`;
 				}
 				else{
-					prof_pic = `<img src="/media/`+data['data'][i].user__account__prof_pic+`" style="border-radius:50%;width:15%;margin-right:10px;">`;
+					prof_pic = `<img src="/media/`+data['data'][i].prof_pic+`" style="border-radius:50%;width:15%;margin-right:10px;">`;
 				}
 
 				$('.content').append(`
@@ -148,7 +149,23 @@ function create_post(event){
 		processData: false,
 		success: function(data){
 			console.log(data);
+			var current_user = "{{ current_user.username }}";
 			var prof_pic;
+			var edit;
+			if(current_user === data.username){
+
+				edit = `<div id="right">
+							<form action="/feeds/archive/`+data.id+`" method="post" class="new-archive_post" style="float: right;margin-right: 10px;">
+								{% csrf_token %}
+								<button type="submit">✖</button>
+							</form>
+							<form action="" method="get" class="new-get-edit-forms">
+								<button id="edit-btn" style="float: right;margin-right: 10px;" type="submit">...</button>
+							</form>
+						</div>`;
+			}
+
+			
 			if(data.prof_pic === undefined){
 				prof_pic = "/static/user_profile/img/blank_picture.png"
 			}
@@ -156,6 +173,7 @@ function create_post(event){
 				prof_pic = data.prof_pic;
 			}
 			$('#new-post').prepend(`
+			<div id="post-id-`+data.id+`">
 				<div id="nav-container">
 					<div id="navbar">
 						<div id="left">
@@ -167,7 +185,7 @@ function create_post(event){
 								+data.username+
 								`</a>
 							</h4>	
-						</div>
+						</div>`+edit+`
 						<br><br>
 						<div class="padding">
 							<h4 class="caption" id="feed-caption">`
@@ -201,6 +219,7 @@ function create_post(event){
 						</form>
 					</div>
 				</div>
+			</div>
 			`);
 
 			$('#create-caption-field').val("");	
@@ -208,6 +227,7 @@ function create_post(event){
 			$('.new-comment-form').submit(comment);
 			$('.new-like').submit(like);
 			$('.new-likers').on('click',likers);
+			$('.new-archive_post').submit(archive_post);	
 		}
 
 	}).done();
@@ -365,25 +385,47 @@ function edit_profile(event){
 	});
 }
 
-// $('.change_pass').submit(function(event){
-// 	event.preventDefault();
-// 	var url = $(this).attr('action');
-// 	$.ajax({
-// 		url:url,
-// 		type: 'POST',
-// 		data: $(this).serialize(),
-// 		success: function(data){
-// 			console.log(data);	
-// 			$('id_old_password').val('');
-// 			$('id_new_password1').val('');
-// 			$('id_new_password2').val('');
-// 			$('#pass_notif').replaceWith(`
-				
-// 			`);
-// 		}
-// 	});
-// });
 
+function archive_post(event){
+	console.log('click');
+	event.preventDefault();
+	var url = $(this).attr('action');
+
+	$.ajax({
+		url:url,
+		type: 'POST',
+		data: $(this).serialize(),
+		success: function(data){
+			$('#post-id-'+data.id).replaceWith(`
+				<div id='post-id-{{ feed.id }}'>
+				
+			`);
+		}
+	});
+}
+
+
+function delete_restore_archive(event){
+	console.log('click')
+	event.preventDefault()
+	var url = $(this).attr('action')
+	$.ajax({
+		url:url,
+		type: 'POST',
+		data: $(this).serialize(),
+		success: function(data){
+			console.log(data);
+			console.log($('#archive-id-'+data.data.id));
+			$('#archive-id-'+data.data.id).replaceWith(`<div id='archive-id-`+data.id+`'></div`);
+		}	
+	})
+}
+
+
+
+$('.restore_post').submit(delete_restore_archive);
+$('.delete_archive').submit(delete_restore_archive);
+$('.archive_post').submit(archive_post);
 $('.edit_profile').submit(edit_profile);
 $('.comment-form').submit(comment);
 $('.like').submit(like);
@@ -391,7 +433,6 @@ $('.likers').on('click',likers);
 $('.create-post').submit(create_post);
 $('.search').submit(search);
 $('.follow').submit(follow);
-
 
 </script>
 </body>
