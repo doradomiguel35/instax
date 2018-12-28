@@ -47,6 +47,8 @@
 			</div>
 		</div>
 
+		
+
 {% block tabscript %}
 {% endblock tabscript %}
 
@@ -94,7 +96,8 @@ function like(event){
 			$('#like-no'+data.id).replaceWith(`
 				<h4 class='post' id='like-no`+data.id+`' style="margin-right: 100px;">`+
 					data.likes+` Likes
-				</h4>`);
+				</h4>`
+				);
 		}
 	});
 }
@@ -102,7 +105,7 @@ function like(event){
 function likers(event){
 	event.preventDefault();
 	var url = $(this).attr('action')
-	$('.overlay').addClass('active');
+	$('#popup1').addClass('active');
 	
 	$.ajax({
 		url:url,
@@ -129,7 +132,7 @@ function likers(event){
 	});
 
 	$('.close').on('click',function(event){
-		$('.overlay').removeClass('active');
+		$('#popup1').removeClass('active');
 		$('.content').empty();
 	});
 }
@@ -418,10 +421,71 @@ function delete_restore_archive(event){
 			console.log($('#archive-id-'+data.data.id));
 			$('#archive-id-'+data.data.id).replaceWith(`<div id='archive-id-`+data.id+`'></div`);
 		}	
-	})
+	});
+}
+
+function edit_post(event){
+	event.preventDefault();
+	console.log('clicked');
+	var data = new FormData(this);
+	var url = $(this).attr('action');
+	$.ajax({
+		url:url,
+		data:data,
+		type: 'POST',
+		cache: false,
+		contentType: false,
+		processData: false,
+		success: function(data){
+			console.log(data);
+			 $('#post-edit-'+data.id).replaceWith(`
+				<div class="padding">
+						<h4 class="caption" id="feed-caption">
+							`+data.caption+`
+						</h4>
+					</div>
+					<div id='center'>
+						<a href="#"><img src="`+data.image+`" width="700px" height="500px"></a>
+					</div>
+			 `);
+
+			 $('#popup2').removeClass('active');
+		}
+	});
+}
+
+function get_post(event){
+	event.preventDefault();
+	console.log('clicked');
+	$('#popup2').addClass('active');
+	$('.close2').on('click',function(event){
+		$('#popup2').removeClass('active');
+	});
+
+	var url = $(this).attr('action');
+	$.ajax({
+		url:url,
+		data: $(this).serialize(),
+		success: function(data){
+			console.log(data);
+			$('#info-feed').replaceWith(`
+				<div id="info-feed">
+					<div id="left">
+						<h4 class="post">`+data.username+`</h4>
+						<p align="left" style="margin-left: 45px;">`+data.caption+`</p>
+					</div>	<br><br><br><br>
+					
+					<div id="center">
+						<img src="`+data.image+`" width="500px" height="500px" style="margin-top: 10px;">
+					</div>
+				</div>`);
+		}
+	});
 }
 
 
+$('.edit').submit(get_post);
+$('.edit-post').submit(edit_post);
 
 $('.restore_post').submit(delete_restore_archive);
 $('.delete_archive').submit(delete_restore_archive);

@@ -164,6 +164,7 @@ class CreatePost(View):
 			new_post = serialize.data
 			new_post['username'] = caption.user.username
 			new_post['image'] = caption.images.image.url
+
 			try:
 				new_post['prof_pic'] = caption.user.account.prof_pic.url
 				return JsonResponse(new_post, safe=False)
@@ -206,7 +207,38 @@ class EditPost(View):
 	GET - get edit forms, to display in template view
 	POST - save recently edited object, returns JSON response to display in template view
 	"""
+	def get(self,request,*args,**kwargs):
+		feed = Feeds.objects.get(id=kwargs.get('feed_id'))
+		image = PicturesUser.objects.get(id=kwargs.get('image_id'))
+		feed_serialize = FeedSerialize(feed)
+		serialized = feed_serialize.data
+		serialized['image'] = image.image.url
+		serialized['username'] = feed.user.username
 
-	def get(self, request, *args, **kwargs):
-		edit_forms = FeedForm()
-		
+		return JsonResponse(serialized,safe=False)
+
+
+	def post(self, request, *args, **kwargs):
+		feed = Feeds.objects.get(id=kwargs.get('feed_id'))
+		image = PicturesUser.objects.get(id=kwargs.get('image_id'))
+		feed_form = FeedForm(request.POST,instance=feed)
+		image_form = PicturesForm(data=request.POST,files=request.FILES,instance=image)
+		print('post')
+
+		if feed_form.is_valid() and image_form.is_valid():
+			print('valid')
+			feed_form.save()
+			image_form.save()
+
+			serialize_feed = FeedSerialize(Feeds.objects.get(id=kwargs.get('feed_id'))).data
+			image_new = PicturesUser.objects.get(id=kwargs.get('image_id'))
+			serialize_feed['image'] = image_new.image.url
+			serialize_feed['username'] = feed.user.username
+			return JsonResponse(serialize_feed,safe=False)
+
+
+
+
+
+
+

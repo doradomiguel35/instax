@@ -9,6 +9,6 @@ urlpatterns = [
     path('like/<int:feed_id>/',views.LikeView.as_view(),name='like'),
     path('create_post/',views.CreatePost.as_view(),name='create_post'),
     path('search/',views.Search.as_view(),name='search'),
-    path('archive/<int:feed_id>',views.ArchivePost.as_view(),name='archive'),
-    # path('edit_post/<int:feed_id>',views.)
+    path('archive/<int:feed_id>/',views.ArchivePost.as_view(),name='archive'),
+    path('edit_post/<int:feed_id>/<int:image_id>/',views.EditPost.as_view(),name='edit_post'),
 ]

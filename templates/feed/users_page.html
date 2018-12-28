@@ -71,9 +71,8 @@
 						<form action="{% url 'feeds:archive' feed.id %}" method="post" class="archive_post" style="float: right;margin-right: 10px;">
 							<button type="submit">✖</button>
 						</form>
-						<form action="" method="get" class="get-edit-forms">
-							<button id="edit-btn" style="float: right;margin-right: 10px;" type="submit">...</button>
-						</form>
+						<button id="edit-btn" style="float: right;margin-right: 10px;">...</button>
+						
 					</div>
 				{% endif %}
 				
@@ -98,7 +97,8 @@
 							<button type="submit">✖</button>
 							
 						</form>
-						<form action="" method="get" class="get-edit-forms">
+
+						<form class="edit" method="get" action="{% url 'feeds:edit_post' feed.id feed.images.id %}">
 							<button id="edit-btn" style="float: right;margin-right: 10px;" type="submit">...</button>
 						</form>
 
@@ -109,26 +109,15 @@
 				
 			{% endif %}
 				
-				<!-- <div id="popup2" class="overlay2">
-					<div class="popup2">
-						<h2>Edit Post</h2><br>
-						<button class="close2">&times;</button>
-						<div class="content2">
-							
-						</div>
+				<div id="post-edit-{{feed.id}}">
+					<div class="padding">
+						<h4 class="caption" id="feed-caption">
+							{{feed.caption}}
+						</h4>
 					</div>
-				</div>		 -->
-	
-
-				
-					
-				<div class="padding">
-					<h4 class="caption" id="feed-caption">
-						{{feed.caption}}
-					</h4>
-				</div>
-				<div id='center'>
-					<a href="#"><img src="{{feed.images.image.url}}" width="700px" height="500px"></a>
+					<div id='center'>
+						<a href="#"><img src="{{feed.images.image.url}}" width="700px" height="500px"></a>
+					</div>
 				</div>
 				<br><br>
 				<div id="left">
@@ -176,7 +165,28 @@
 				</form>
 			</div>
 		</div>
+			<div id="popup2" class="overlay2">
+			<div class="popup2">
+				<h2>Edit Post</h2><br>
+				<button class="close2">&times;</button>
+				<div class="content2">
+					<form action="{% url 'feeds:edit_post' feed.id feed.images.id %}" method="post"  enctype="multipart/form-data" class="edit-post">
+					{% csrf_token %}
+						{{feed_form.caption }}
+						{{ picture_form.image }}
+
+						
+						<button class="btn btn-primary btn-lg btn-block register-button" type="submit" style="width: 105px;margin-left: 490px;">Edit</button>
+					</form>
+					<div id="info-feed"></div>
+					
+				</div>
+				
+			</div>
+		</div>	
 	</div>
+	
 	{% endfor %}
 </div>
+	
 {% endblock content %}
