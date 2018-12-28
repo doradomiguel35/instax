@@ -69,7 +69,8 @@ class FeedsView(TemplateView):
 			
 			serializer = CommentSerialize(Comments.objects.get(id=comment.id))
 			serialized = serializer.data
-			serialized['username'] = self.request.user.username
+			serialized['username'] = comment.user.username
+			serialized['current_user'] = request.user.username
 			
 			return JsonResponse(serialized, safe=False)
 
@@ -151,7 +152,7 @@ class CreatePost(View):
 	def post(self, request,*args,**kwargs):
 		caption = FeedForm(request.POST)
 		image = PicturesForm(data=request.POST,files=request.FILES)
-		
+
 		if caption.is_valid() and image.is_valid():
 			caption = caption.save(commit=False)
 			image = image.save(commit=False)
@@ -223,10 +224,8 @@ class EditPost(View):
 		image = PicturesUser.objects.get(id=kwargs.get('image_id'))
 		feed_form = FeedForm(request.POST,instance=feed)
 		image_form = PicturesForm(data=request.POST,files=request.FILES,instance=image)
-		print('post')
-
+		
 		if feed_form.is_valid() and image_form.is_valid():
-			print('valid')
 			feed_form.save()
 			image_form.save()
 
@@ -235,6 +234,47 @@ class EditPost(View):
 			serialize_feed['image'] = image_new.image.url
 			serialize_feed['username'] = feed.user.username
 			return JsonResponse(serialize_feed,safe=False)
+
+
+class EditComment(View):
+	"""
+	Edit Comments
+	"""
+	def get(self,request,*args,**kwargs):
+		comment = Comments.objects.get(id=kwargs.get('comment_id'))
+		comment_serialize = CommentSerialize(comment).data
+
+		return JsonResponse(comment_serialize,safe=False)
+
+
+	def post(self,request,*args,**kwargs):
+		comment = Comments.objects.get(id=kwargs.get('comment_id'))
+		comment_form = CommentForm(request.POST,instance=comment)
+
+		if comment_form.is_valid():
+			comment_form.save()
+			
+			comment_serialize = CommentSerialize(Comments.objects.get(id=kwargs.get('comment_id'))).data
+			comment_serialize['username'] = comment.user.username
+			comment_serialize['current_user'] = request.user.username
+			return JsonResponse(comment_serialize,safe=False)
+
+
+class DeleteComment(View):
+	"""
+	Delete COmments
+
+	"""
+
+	def post(self,request,*args,**kwargs):
+		comment = Comments.objects.get(id=kwargs.get('comment_id'))
+		comment_serialize = CommentSerialize(comment).data
+		comment_serialize['username'] = comment.user.username
+		comment_serialize['current_user'] = request.user.username
+
+		Comments.objects.get(id=kwargs.get('comment_id')).delete()
+
+		return JsonResponse(comment_serialize,safe=False)
 
 
 

@@ -69,9 +69,12 @@
 				{% if feed.user.username == current_user.username %}	
 					<div id="right">
 						<form action="{% url 'feeds:archive' feed.id %}" method="post" class="archive_post" style="float: right;margin-right: 10px;">
+							{% csrf_token %}
 							<button type="submit">✖</button>
 						</form>
-						<button id="edit-btn" style="float: right;margin-right: 10px;">...</button>
+						<form class="edit" method="get" action="{% url 'feeds:edit_post' feed.id feed.images.id %}">
+							<button id="edit-btn" style="float: right;margin-right: 10px;" type="submit">...</button>
+						</form>
 						
 					</div>
 				{% endif %}
@@ -109,15 +112,14 @@
 				
 			{% endif %}
 				
-				<div id="post-edit-{{feed.id}}">
-					<div class="padding">
-						<h4 class="caption" id="feed-caption">
-							{{feed.caption}}
-						</h4>
-					</div>
-					<div id='center'>
-						<a href="#"><img src="{{feed.images.image.url}}" width="700px" height="500px"></a>
-					</div>
+				<div id="post-edit-{{feed.id }}"></div>
+				<div class="padding">
+					<h4 class="caption" id="feed-caption">
+						{{feed.caption}}
+					</h4>
+				</div>
+				<div id='center'>
+					<a href="#"><img src="{{feed.images.image.url}}" width="700px" height="500px"></a>
 				</div>
 				<br><br>
 				<div id="left">
@@ -139,20 +141,62 @@
 				<div class="comments">
 				{% for comments in comment_data %}
 					{% if comments.post.id == feed.id %}
+						<div id="comment_id-{{ comments.id }}">
+						
+						{% if feed.user.username == current_user.username %}
+							<form action="{% url 'feeds:delete_comment' comments.id %}" method="post" class="delete-comment">
+								{% csrf_token %}
+								<button style="float: right;" type="submit">x</button>
+							</form>
+							
+							{% if comments.user.username == current_user.username %}
+								<form method='get' action="{% url 'feeds:get_comment' comments.id %}" class="comment-form-active">
+									{% csrf_token %}
+									<button style="float: right;" type="submit">...</button>
+								</form>
 
-						<div class="padding-comments">
-							<span class="comment-user" id="comment-user">
-								<a href="{% url 'profile:profile' comments.user.username %}" style="color: black;float: left;">
-									{{ comments.user.username }} |
-								</a> 
-							</span>
-							<span class="comment">
-								<p>{{ comments.comment }}<p>
-							</span>
-							 <h4 style="font-size: 12px;">
-							 	Commented on: {{ comments.commented_at }}
-							 </h4>
-						</div>
+							{% endif %}
+						{% elif comments.user.username == current_user.username %}
+							<form action="{% url 'feeds:delete_comment' comments.id %}" method="post" class="delete-comment">
+								{% csrf_token %}
+								<button style="float: right;" type="submit">x</button>
+							</form>
+
+							<form method='get' action="{% url 'feeds:get_comment' comments.id %}" class="comment-form-active">
+								{% csrf_token %}
+								<button style="float: right;" type="submit">...</button>
+							</form>
+
+						{% endif %}
+						
+							<div class="padding-comments">
+								<span class="comment-user" id="comment-user">
+									<a href="{% url 'profile:profile' comments.user.username %}" style="color: black;float: left;">
+										{{ comments.user.username }} |
+									</a> 
+								</span>
+								<span class="comment">
+									<p>{{ comments.comment }}<p>
+								</span>
+								
+								<div id='comment-up-{{comments.id}}' class="edit-comment-form" style="display: none;">
+									<form action="{% url 'feeds:edit_comment' comments.id %}" method="post" class="edit-comment">
+										{% csrf_token %}
+										{{ comment_form.comment|add_class:'text-box'|attr:"style:width:620px;"|attr:'id:comment-edit'|attr:"placeholder:Edit Comment Here" }}
+										
+									
+									<button style="float: right;" type="submit">Edit</button>
+									</form>
+									<button style="float: right;" id="cancel-edit-comment-{{comments.id}}">Cancel</button>
+								</div>
+								
+								<h4 style="font-size: 12px;">
+									Commented on: {{ comments.commented_at }}
+								</h4>
+
+							</div>
+						
+
 					
 					{% endif %}
 				{% endfor %}
@@ -161,29 +205,31 @@
 				
 				<form method="post" action="{% url 'feeds:comment' feed.id %}" class='comment-form'>{% csrf_token %}
 					{{ comment_form.comment|add_class:'text-box' }}
-					<input id='create-comment' class="btn btn-primary btn-lg btn-block login-button" type="submit" value="Comment" />
+					<button id='create-comment' class="btn btn-primary btn-lg btn-block login-button" type="submit" style="margin-left: 550px;width: 110px;">Comment</button>
 				</form>
 			</div>
 		</div>
 			<div id="popup2" class="overlay2">
-			<div class="popup2">
-				<h2>Edit Post</h2><br>
-				<button class="close2">&times;</button>
-				<div class="content2">
-					<form action="{% url 'feeds:edit_post' feed.id feed.images.id %}" method="post"  enctype="multipart/form-data" class="edit-post">
-					{% csrf_token %}
-						{{feed_form.caption }}
-						{{ picture_form.image }}
+				<div class="popup2">
+					<h2>Edit Post</h2><br>
+					<button class="close2">&times;</button>
+					<div class="content2">
+						<form action="{% url 'feeds:edit_post' feed.id feed.images.id %}" method="post"  enctype="multipart/form-data" class="edit-post">
+						{% csrf_token %}
+							<div style="margin-right: 60px;">
+								{{feed_form.caption }}
+							</div>
+							{{ picture_form.image }}
 
+							
+							<button class="btn btn-primary btn-lg btn-block register-button" type="submit" style="width: 105px;margin-left: 465px;">Edit</button>
+						</form>
+						<div id="info-feed"></div>
 						
-						<button class="btn btn-primary btn-lg btn-block register-button" type="submit" style="width: 105px;margin-left: 490px;">Edit</button>
-					</form>
-					<div id="info-feed"></div>
+					</div>
 					
 				</div>
-				
-			</div>
-		</div>	
+			</div>	
 	</div>
 	
 	{% endfor %}

@@ -63,23 +63,52 @@ function comment(event){
 		type: "POST",
 		data: $(this).serialize(),
 		success: function(data){
-			console.log('executed');
+			console.log(data);
+			var edit;
+			if(data.username === data.current_user){
+				edit = `<form method="post" class="new-comment-form-active">
+							{% csrf_token %}
+							<button style="float: right;" type="submit">...</button>
+						</form>`;
+			}
+
 			$('.insertComment'+data.post_id).prepend(`
-				<div class="padding-comments">
-					<span class="comment-user" id="comment-user">
-						<a href="#" style="color: black;">`
-						+data.username+ `|
-						</a> 
-					</span>
-					<span class="comment">`
-					+data.comment+
-					`</span>
-					<br>
-					 <h4 style="font-size: 12px;">
-					 	Commented on:` +data.commented_at+
-					`</h4>
+				<form action="/feeds/delete_comment/`+data.id+`/" method="post" class="new-delete-comment">
+					{% csrf_token %}
+					<button style="float: right;" type="submit">x</button>
+				</form>`
+				+edit+
+				`
+				<div id='comment_id-`+data.id+`'>
+					<div class="padding-comments">
+						<span class="comment-user" id="comment-user">
+							<a href="#" style="color: black;">`
+							+data.username+ `|
+							</a> 
+						</span>
+						<span class="comment">`
+						+data.comment+
+						`</span>
+						<div id='comment-up-`+data.id+`' class="edit-comment-form" style="display: none;">
+							<form action="/feeds/edit_comment/`+data.id+`/" method="post" class="edit-comment">
+								{% csrf_token %}
+								{{ comment_form.comment|add_class:'text-box'|attr:"style:width:620px;"|attr:'id:comment-edit'|attr:"placeholder:Edit Comment Here" }}
+								
+							
+							<button style="float: right;" type="submit">Edit</button>
+							</form>
+							<button style="float: right;" id="cancel-edit-comment-`+data.id+`">Cancel</button>
+						</div>
+						<br>
+						 <h4 style="font-size: 12px;">
+						 	Commented on:` +data.commented_at+
+						`</h4>
+					</div>
 				</div>`);
 			$('.text-box').val('');
+			$('.new-comment-form-active').submit(comment_active);
+			$('.new-delete-comment').submit(delete_comment);
+			
 		}
 	});
 }
@@ -483,10 +512,111 @@ function get_post(event){
 	});
 }
 
+function delete_comment(event){
+	event.preventDefault();
+	console.log('delete click');
+	var url = $(this).attr('action');
+	$.ajax({
+		url:url,
+		data: $(this).serialize(),
+		type: 'POST',
+		success: function(data){
+			$('#comment_id-'+data.id).empty();
+		}
+	});
+}
 
+function comment_active(event){
+	event.preventDefault();
+	console.log('clicked');
+	var url = $(this).attr('action');
+
+	$.ajax({
+		url:url,
+		data: $(this).serialize(),
+		success: function(data){
+			console.log(data);
+			$('#comment-up-'+data.id).show();
+
+			$('#cancel-edit-comment-'+data.id).on('click',function(){
+				console.log('clicked')
+				$('#comment-up-'+data.id).hide();
+			});
+			
+		}
+	});
+}
+
+function edit_comment(event){
+	event.preventDefault();
+	console.log('edit-comment');
+	var url = $(this).attr('action');
+	$.ajax({
+		url:url,
+		data: $(this).serialize(),
+		type: 'POST',
+		success: function(data){
+			console.log(data);
+			var buttons = 	``;
+			if(data.username === data.current_user){
+				buttons = 	`<form action="/feeds/delete_comment/`+data.id+`/" method="post" class="new-delete-comment">
+								{% csrf_token %}
+								<button style="float: right;" type="submit">x</button>
+							</form>
+							
+							
+							
+							<form method='get' action="/feeds/get_comment/`+data.id+`/" class="new-comment-form-active">
+								{% csrf_token %}
+								<button style="float: right;" type="submit">...</button>
+							</form>`;
+			}
+
+			$('#comment_id-'+data.id).replaceWith(`
+				<div id="comment_id-`+data.id+`">
+						`+buttons+`
+						
+							<div class="padding-comments">
+								<span class="comment-user" id="comment-user">
+									<a href="/profile/`+data.username+`/" style="color: black;float: left;">
+										`+data.username+` |
+									</a> 
+								</span>
+								<span class="comment">
+									<p>`+data.comment+`<p>
+								</span>
+								
+								<div id='comment-up-`+data.id+`' class="edit-comment-form" style="display: none;">
+									<form action="/feeds/edit_comment/`+data.id+`/" method="post" class="new-edit-comment">
+										{% csrf_token %}
+										{{ comment_form.comment|add_class:'text-box'|attr:"style:width:620px;"|attr:'id:comment-edit'|attr:"placeholder:Edit Comment Here" }}
+										
+									
+									<button style="float: right;" type="submit">Edit</button>
+									</form>
+									<button style="float: right;" id="cancel-edit-comment-`+data.id+`">Cancel</button>
+								</div>
+								
+								<h4 style="font-size: 12px;">
+									Commented on: `+data.commented_at+`
+								</h4>
+								
+							</div>
+						</div>
+			`);
+			$('.new-comment-form-active').submit(comment_active);
+			$('.new-delete-comment').submit(delete_comment);
+			$('.new-edit-comment').submit(edit_comment);
+		}
+	}).done();
+	
+}
+
+$('.edit-comment').submit(edit_comment);
+$('.comment-form-active').submit(comment_active);
+$('.delete-comment').submit(delete_comment);
 $('.edit').submit(get_post);
 $('.edit-post').submit(edit_post);
-
 $('.restore_post').submit(delete_restore_archive);
 $('.delete_archive').submit(delete_restore_archive);
 $('.archive_post').submit(archive_post);

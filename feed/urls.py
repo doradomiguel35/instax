@@ -11,4 +11,8 @@ urlpatterns = [
     path('search/',views.Search.as_view(),name='search'),
     path('archive/<int:feed_id>/',views.ArchivePost.as_view(),name='archive'),
     path('edit_post/<int:feed_id>/<int:image_id>/',views.EditPost.as_view(),name='edit_post'),
+    path('edit_comment/<int:comment_id>/',views.EditComment.as_view(),name='edit_comment'),
+    path('get_comment/<int:comment_id>/',views.EditComment.as_view(),name='get_comment'),
+    path('delete_comment/<int:comment_id>/',views.DeleteComment.as_view(),name='delete_comment'),
+
 ]
