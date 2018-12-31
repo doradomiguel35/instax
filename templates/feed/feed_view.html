@@ -2,20 +2,6 @@
 {% load static %}
 {% load widget_tweaks %}
 
-
-{% block title %}
-<title>Feeds - {{ user_data.username }}</title>
-{% endblock title %}
-
-{% block feed_url %}
-<a href="{% url 'feeds:feeds' %}">
-	<h1 class="title" class="logo-position">𝐼𝓃𝓈𝓉𝒶𝓍</h1>
-</a>
-{% endblock feed_url %}
-
-
-{{ user_data.username }}
-
 {% block search %}
 	<form method='get' action="{% url 'feeds:search' %}" class="search">
 		{% csrf_token %}
@@ -25,42 +11,20 @@
 {% endblock search %}
 
 {% block content %}
-
 <div class="main-body">
-	<form action="{% url 'feeds:create_post' %}" method="post" enctype="multipart/form-data" class="create-post">
-		{% csrf_token %}
-		<div id="nav-container" class="nav-container-position">
-			<div id="navbar">
-				<div id="left" >
-					<h4 class="post" style="text-align: left;margin-top: -10px;margin-left: 20px;">Create post</h4>
-				</div>
-				{{ feed_form.caption }}
-				<div id="left" style="margin-left: 89px;">
-					{{ picture_form.image}}
-				</div>
-				<div id="right">
-					<button  class="btn btn-primary btn-lg btn-block register-button" type="submit" style="width: 105px;">Post</button>
-				</div>
-				<br><br><br>	
-			</div>
-		</div>	
-	</form>
-
-	<div id='new-post'></div>
-	{% for feed in feed_data %}
-	<div id="post-id-{{ feed.id }}">
+	<div id="post-id-{{ feeds.id }}">
 		<div id="nav-container">
 			<div id="navbar">
 				
-			{% if feed.user.account.prof_pic %}
+			{% if feeds.user.account.prof_pic %}
 				
 					<div id="left">
-						<a href="{% url 'profile:profile' feed.user.username %}">
-							<img src="{{ feed.user.account.prof_pic.url }}" class="feed-prof-pic" >
+						<a href="{% url 'profile:profile' feeds.user.username %}">
+							<img src="{{ feeds.user.account.prof_pic.url }}" class="feed-prof-pic" >
 						</a>
 						<h4 class="post" id='feed-prof-username'>
-							<a href="{% url 'profile:profile' feed.user.username %}">
-								{{ feed.user.username}}
+							<a href="{% url 'profile:profile' feeds.user.username %}">
+								{{ feeds.user.username}}
 							</a>
 						</h4>
 
@@ -68,11 +32,11 @@
 				
 				{% if feed.user.username == current_user.username %}	
 					<div id="right">
-						<form action="{% url 'feeds:archive' feed.id %}" method="post" class="archive_post" style="float: right;margin-right: 10px;">
+						<form action="{% url 'feeds:archive' feeds.id %}" method="post" class="archive_post" style="float: right;margin-right: 10px;">
 							{% csrf_token %}
 							<button type="submit">✖</button>
 						</form>
-						<form class="edit" method="get" action="{% url 'feeds:edit_post' feed.id feed.images.id %}">
+						<form class="edit" method="get" action="{% url 'feeds:edit_post' feeds.id feeds.images.id %}">
 							<button id="edit-btn" style="float: right;margin-right: 10px;" type="submit">...</button>
 						</form>
 						
@@ -83,25 +47,25 @@
 				
 				{% else %}
 					<div id="left">
-						<a href="{% url 'profile:profile' feed.user.username %}">
+						<a href="{% url 'profile:profile' feeds.user.username %}">
 							<img src="{% static 'user_profile/img/blank_picture.png' %}" class="feed-prof-pic">
 						</a>
 						<h4 class="post" id='feed-prof-username'>
-							<a href="{% url 'profile:profile' feed.user.username %}">
-								{{ feed.user.username}}
+							<a href="{% url 'profile:profile' feeds.user.username %}">
+								{{ feeds.user.username}}
 							</a>
 						</h4>
 					</div>
-				{% if feed.user.username == current_user.username %}
+				{% if feeds.user.username == current_user.username %}
 					
 					<div id="right">
-						<form method="post" action="{% url 'feeds:archive' feed.id %}" class="archive_post" style="float: right;margin-right: 10px;">
+						<form method="post" action="{% url 'feeds:archive' feeds.id %}" class="archive_post" style="float: right;margin-right: 10px;">
 							{% csrf_token %}
 							<button type="submit">✖</button>
 							
 						</form>
 
-						<form class="edit" method="get" action="{% url 'feeds:edit_post' feed.id feed.images.id %}">
+						<form class="edit" method="get" action="{% url 'feeds:edit_post' feeds.id feeds.images.id %}">
 							<button id="edit-btn" style="float: right;margin-right: 10px;" type="submit">...</button>
 						</form>
 
@@ -112,35 +76,35 @@
 				
 			{% endif %}
 				
-				<div id="post-edit-{{feed.id }}"></div>
+				<div id="post-edit-{{feeds.id }}"></div>
 				<div class="padding">
 					<h4 class="caption" id="feed-caption">
 						{{feed.caption}}
 					</h4>
 				</div>
 				<div id='center'>
-					<a href="{% url 'feeds:view_post' feed.id %}"><img src="{{feed.images.image.url}}" width="700px" height="500px"></a>
+					<a href="{% url 'feeds:view_post' feeds.id %}"><img src="{{feeds.images.image.url}}" width="700px" height="500px"></a>
 				</div>
 				<br><br>
 				<div id="left">
-					<form method="post" action="{% url 'feeds:like' feed.id %}" class="like">{% csrf_token %}
+					<form method="post" action="{% url 'feeds:like' feeds.id %}" class="like">{% csrf_token %}
 						<button id="like-btn" class="btn btn-primary btn-lg btn-block register-button" type="submit" style="float: left">Like</button>
 					</form>
 
 					
 					
 					<br><br>
-					<h4 class="post" id="like-no{{feed.id}}" style="margin-right: 100px;">
-						{{ feed.likes }} Likes
+					<h4 class="post" id="like-no{{feeds.id}}" style="margin-right: 100px;">
+						{{ feeds.likes }} Likes
 					</h4>
-					<form method="get" action="{% url 'feeds:like' feed.id %}" class="likers">
+					<form method="get" action="{% url 'feeds:like' feeds.id %}" class="likers">
 						<button style="margin-right: 10px;">View who liked this...</button>
 					</form>	
 				</div>
 				<br><br><br><br><br><br>
 				<div class="comments">
 				{% for comments in comment_data %}
-					{% if comments.post.id == feed.id %}
+					{% if comments.post.id == feeds.id %}
 						<div id="comment_id-{{ comments.id }}">
 						
 						{% if feed.user.username == current_user.username %}
@@ -176,7 +140,7 @@
 									</a> 
 								</span>
 								<span class="comment">
-									<p>{{ comments.comment }}<p>
+									<p>{{ comments.comment }}</p>
 								</span>
 								
 								<div id='comment-up-{{comments.id}}' class="edit-comment-form" style="display: none;">
@@ -203,42 +167,20 @@
 				
 				
 				
-			<div class="insertComment{{feed.id}}" ></div>
+			<div class="insertComment{{feeds.id}}" ></div>
 			</div>
 			
 		</div>
 
 				
 			
-			<form method="post" action="{% url 'feeds:comment' feed.id %}" class='comment-form'>{% csrf_token %}
+			<form method="post" action="{% url 'feeds:comment' feeds.id %}" class='comment-form'>{% csrf_token %}
 			{{ comment_form.comment|add_class:'text-box' }}
 			<button id='create-comment' class="btn btn-primary btn-lg btn-block login-button" type="submit" style="margin-left: 570px;width: 110px;">Comment</button>
 		</form>
 		<br><br>
-	</div>
-
-	<div id="popup2" class="overlay2">
-		<div class="popup2">
-			<h2>Edit Post</h2><br>
-			<button class="close2">&times;</button>
-			<div class="content2">
-				<form action="{% url 'feeds:edit_post' feed.id feed.images.id %}" method="post"  enctype="multipart/form-data" class="edit-post">
-				{% csrf_token %}
-					<div style="margin-right: 60px;">
-						{{feed_form.caption }}
-					</div>
-					{{ picture_form.image }}
-
-					
-					<button class="btn btn-primary btn-lg btn-block register-button" type="submit" style="width: 105px;margin-left: 465px;">Edit</button>
-				</form>
-				<div id="info-feed"></div>
-				
-			</div>
-			
 		</div>
+
 	</div>
-	{% endfor %}
 </div>
-	
 {% endblock content %}

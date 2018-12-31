@@ -15,6 +15,7 @@
 		<link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
+
     	{% block title %}
 		{% endblock title %}
 	</head>
@@ -51,6 +52,7 @@
 
 {% block tabscript %}
 {% endblock tabscript %}
+
 
 <script>
 	
@@ -226,7 +228,7 @@ function create_post(event){
 							`</h4>
 						</div>
 						<div id='center'>
-							<a href="#"><img src="`+data.image+`" width="700px" height="500px"></a>
+							<a href="/feeds/view_post/`+data.id+`/"><img src="`+data.image+`" width="700px" height="500px"></a>
 						</div>
 						<br><br>
 						<div id="left">
@@ -630,5 +632,6 @@ $('.search').submit(search);
 $('.follow').submit(follow);
 
 </script>
+
 </body>
 </html>

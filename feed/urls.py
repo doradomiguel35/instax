@@ -14,5 +14,6 @@ urlpatterns = [
     path('edit_comment/<int:comment_id>/',views.EditComment.as_view(),name='edit_comment'),
     path('get_comment/<int:comment_id>/',views.EditComment.as_view(),name='get_comment'),
     path('delete_comment/<int:comment_id>/',views.DeleteComment.as_view(),name='delete_comment'),
+    path('view_post/<int:pk>/',views.ViewPost.as_view(),name='view_post'),
 
 ]

@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 from django.views.generic import TemplateView,View
+from django.views.generic.detail import DetailView
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.core import serializers
@@ -255,6 +256,7 @@ class EditComment(View):
 			comment_form.save()
 			
 			comment_serialize = CommentSerialize(Comments.objects.get(id=kwargs.get('comment_id'))).data
+
 			comment_serialize['username'] = comment.user.username
 			comment_serialize['current_user'] = request.user.username
 			return JsonResponse(comment_serialize,safe=False)
@@ -275,6 +277,28 @@ class DeleteComment(View):
 		Comments.objects.get(id=kwargs.get('comment_id')).delete()
 
 		return JsonResponse(comment_serialize,safe=False)
+
+
+class ViewPost(DetailView):
+	"""
+	View Post
+	"""
+
+	model = Feeds
+	template_name = "feed/feed_view.html"
+
+	def get_context_data(self,**kwargs):
+		context = super(ViewPost,self).get_context_data(**kwargs)
+		context['comment_data'] = Comments.objects.filter(post_id=context.get('feeds').id)
+		context['comment_form'] = CommentForm()
+		context['search_form'] = SearchForm()
+		context['user_data'] = self.request.user
+		context['current_user'] = self.request.user
+		
+		return context
+
+
+		
 
 
 
