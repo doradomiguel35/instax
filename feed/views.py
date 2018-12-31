@@ -87,13 +87,11 @@ class LikeView(View):
 	def get(self,request,*args,**kwargs):
 
 		feed_likers = Feeds.objects.get(
-			id=kwargs.get('feed_id')).liker.filter(
-					user_id=self.request.user.id
-				).values(
+			id=kwargs.get('feed_id')).liker.all().values(
 					'user__username',
 					'prof_pic'
 				)
-
+		
 		serializer = {
 			'data': list(feed_likers)
 		}
@@ -104,10 +102,12 @@ class LikeView(View):
 	def post(self,request,*args,**kwargs):
 
 		feed_data = Feeds.objects.get(id=kwargs.get('feed_id'))
+		# like_user = LikesUser.objects.get(feed_id=kwargs.get('feed_id')).liked.filter(user_id=request.user.id)
 		
 		try:
-			like_user = LikesUser.objects.get(feed_id=kwargs.get('feed_id'))
+			like_user = Feeds.objects.get(id=kwargs.get('feed_id')).liked.get(user_id=request.user.id)
 			account_user = Account.objects.get(user_id=self.request.user.id)
+			
 			if like_user.liked == True:
 				feed_data.likes-=1
 				feed_data.liker.remove(account_user)
@@ -294,7 +294,7 @@ class ViewPost(DetailView):
 		context['search_form'] = SearchForm()
 		context['user_data'] = self.request.user
 		context['current_user'] = self.request.user
-		
+
 		return context
 
 

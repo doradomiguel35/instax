@@ -285,7 +285,7 @@ class EditProfile(TemplateView):
 		if edit.is_valid() and prof_pic_form.is_valid():
 			edit.save()
 			prof_pic_form.save()
-			serialize_edit =UserSerialize(User.objects.get(username=request.user.username))
+			serialize_edit = UserSerialize(User.objects.get(username=request.user.username))
 			serialize_pic = ProfPicSerialize(Account.objects.get(user_id=request.user.id))
 			data = {
 				'profile': serialize_edit.data,
@@ -356,7 +356,7 @@ class DeletePost(View):
 		feed = Feeds.objects.get(id=kwargs.get('feed_id'))
 		feed_serialize = FeedSerialize(feed)
 		serialized = feed_serialize.data
-		feed_delete = Feeds.objects.get(id=kwargs.get('feed_id')).delete()
+		PicturesUser.objects.get(id=feed.images.id).delete()
 		return JsonResponse({'data': serialized},safe=False)
 
 
@@ -365,6 +365,7 @@ class UnarchivePost(View):
 	Unarchive Post
 	POST - remove post from archive, restore it to feeds
 	"""
+
 	def post(self,request,*args,**kwargs):
 		feed = Feeds.objects.get(id=kwargs.get('feed_id'))
 		feed.archived= False;
@@ -379,6 +380,7 @@ class Logout(TemplateView):
 	Logout the user
 	GET - log out current user, redirect to login page
 	"""
+	
 	template_name = 'accounts/login/login.html'
 
 	def get(self,request,*args,**kwargs):

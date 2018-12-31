@@ -190,7 +190,7 @@ function create_post(event){
 			if(current_user === data.username){
 
 				edit = `<div id="right">
-							<form action="/feeds/archive/`+data.id+`" method="post" class="new-archive_post" style="float: right;margin-right: 10px;">
+							<form action="/feeds/archive/`+data.id+`/" method="post" class="new-archive_post" style="float: right;margin-right: 10px;">
 								{% csrf_token %}
 								<button type="submit">✖</button>
 							</form>
