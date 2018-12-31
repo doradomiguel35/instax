@@ -66,20 +66,20 @@ function comment(event){
 			console.log(data);
 			var edit;
 			if(data.username === data.current_user){
-				edit = `<form method="post" class="new-comment-form-active">
+				edit = `<form method="get" action="/feeds/get_comment/`+data.id+`/" class="new-comment-form-active">
 							{% csrf_token %}
 							<button style="float: right;" type="submit">...</button>
 						</form>`;
 			}
 
 			$('.insertComment'+data.post_id).prepend(`
-				<form action="/feeds/delete_comment/`+data.id+`/" method="post" class="new-delete-comment">
+				<div id='comment_id-`+data.id+`'>
+					<form action="/feeds/delete_comment/`+data.id+`/" method="post" class="new-delete-comment">
 					{% csrf_token %}
 					<button style="float: right;" type="submit">x</button>
-				</form>`
-				+edit+
-				`
-				<div id='comment_id-`+data.id+`'>
+					</form>`
+					+edit+
+					`
 					<div class="padding-comments">
 						<span class="comment-user" id="comment-user">
 							<a href="#" style="color: black;">`
@@ -105,10 +105,11 @@ function comment(event){
 						`</h4>
 					</div>
 				</div>`);
+
 			$('.text-box').val('');
 			$('.new-comment-form-active').submit(comment_active);
 			$('.new-delete-comment').submit(delete_comment);
-			
+			$('.edit-comment').submit(edit_comment);
 		}
 	});
 }
