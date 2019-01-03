@@ -68,7 +68,4 @@ class LoginValidation(forms.Form):
 		if user is not None:
 			return self.cleaned_data
 		raise forms.ValidationError('Invalid Username or Password')
-		# for account in self.account_model:
-		# 	if username == account.username and password == account.password:
-		# 		return self.cleaned_data
-		# raise forms.ValidationError('Invalid Username or Password')
+

@@ -58,5 +58,6 @@ class SearchForm(forms.Form):
 		'style': 'text-align: center; width: 297px;margin-left:20px;',
 		}))
 
+
 		    	
 

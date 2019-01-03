@@ -57,7 +57,7 @@ class RegisterView(TemplateView):
 			
 			followers = Followers.objects.filter(follow=True,follower_username=request.user.username).values('followed_user_id')
 		
-			feed_data = Feeds.objects.filter(user_id__in=followers) | Feeds.objects.filter(user_id=request.user.id)
+			feed_data = Feeds.objects.filter(user_id__in=followers) | Feeds.objects.filter(user_id=request.user.id,archived=False)
 			
 			comment_data = Comments.objects.filter(post_id__in=feed_data.values('id'))
 			
@@ -111,7 +111,7 @@ class LoginView(TemplateView):
 			
 			followers = Followers.objects.filter(follow=True,follower_username=request.user.username).values('followed_user_id')
 		
-			feed_data = Feeds.objects.filter(user_id__in=followers) | Feeds.objects.filter(user_id=request.user.id)
+			feed_data = Feeds.objects.filter(user_id__in=followers) | Feeds.objects.filter(user_id=request.user.id,archived=False)
 			
 			comment_data = Comments.objects.filter(post_id__in=feed_data.values('id'))
 	

@@ -112,14 +112,15 @@
 				
 			{% endif %}
 				
-				<div id="post-edit-{{feed.id }}"></div>
-				<div class="padding">
-					<h4 class="caption" id="feed-caption">
-						{{feed.caption}}
-					</h4>
-				</div>
-				<div id='center'>
-					<a href="{% url 'feeds:view_post' feed.id %}"><img src="{{feed.images.image.url}}" width="700px" height="500px"></a>
+				<div id="post-edit-{{feed.id }}">
+					<div class="padding">
+						<h4 class="caption" id="feed-caption">
+							{{feed.caption}}
+						</h4>
+					</div>
+					<div id='center'>
+						<a href="{% url 'feeds:view_post' feed.id %}"><img src="{{feed.images.image.url}}" width="700px" height="500px"></a>
+					</div>
 				</div>
 				<br><br>
 				<div id="left">
@@ -176,7 +177,7 @@
 									</a> 
 								</span>
 								<span class="comment">
-									<p>{{ comments.comment }}<p>
+									<p>{{ comments.comment }}</p>
 								</span>
 								
 								<div id='comment-up-{{comments.id}}' class="edit-comment-form" style="display: none;">
@@ -217,28 +218,30 @@
 		<br><br>
 	</div>
 
-	<div id="popup2" class="overlay2">
-		<div class="popup2">
-			<h2>Edit Post</h2><br>
-			<button class="close2">&times;</button>
-			<div class="content2">
-				<form action="{% url 'feeds:edit_post' feed.id feed.images.id %}" method="post"  enctype="multipart/form-data" class="edit-post">
-				{% csrf_token %}
-					<div style="margin-right: 60px;">
-						{{feed_form.caption }}
-					</div>
-					{{ picture_form.image }}
+		<div id="popup2" class="overlay2">
+			<div class="popup2">
+				<h2>Edit Post</h2><br>
+				<button class="close2">&times;</button>
+				<div class="content2">
+					<form action="{% url 'feeds:edit_post' feed.id feed.images.id %}" method="post"  enctype="multipart/form-data" class="edit-post">
+					{% csrf_token %}
+						<div style="margin-right: 60px;">
+							{{feed_form.caption }}
+						</div>
+						{{ picture_form.image }}
 
+						
+						<button class="btn btn-primary btn-lg btn-block register-button" type="submit" style="width: 105px;margin-left: 465px;">Edit</button>
+					</form>
+					<div id="info-feed"></div>
 					
-					<button class="btn btn-primary btn-lg btn-block register-button" type="submit" style="width: 105px;margin-left: 465px;">Edit</button>
-				</form>
-				<div id="info-feed"></div>
+				</div>
 				
 			</div>
-			
 		</div>
+
 	</div>
 	{% endfor %}
-</div>
+
 	
 {% endblock content %}

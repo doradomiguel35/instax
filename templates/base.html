@@ -194,7 +194,7 @@ function create_post(event){
 								{% csrf_token %}
 								<button type="submit">✖</button>
 							</form>
-							<form action="" method="get" class="new-get-edit-forms">
+							<form action="/feeds/edit_post/`+data.id+`/`+data.image_id+`/" method="get" class="new-get-edit-forms">
 								<button id="edit-btn" style="float: right;margin-right: 10px;" type="submit">...</button>
 							</form>
 						</div>`;
@@ -222,13 +222,15 @@ function create_post(event){
 							</h4>	
 						</div>`+edit+`
 						<br><br>
-						<div class="padding">
-							<h4 class="caption" id="feed-caption">`
-							+data.caption+
-							`</h4>
-						</div>
-						<div id='center'>
-							<a href="/feeds/view_post/`+data.id+`/"><img src="`+data.image+`" width="700px" height="500px"></a>
+						<div id="post-edit-`+data.id+`">
+							<div class="padding">
+								<h4 class="caption" id="feed-caption">`
+								+data.caption+
+								`</h4>
+							</div>
+							<div id='center'>
+								<a href="/feeds/view_post/`+data.id+`/"><img src="`+data.image+`" width="700px" height="500px"></a>
+							</div>
 						</div>
 						<br><br>
 						<div id="left">
@@ -255,7 +257,27 @@ function create_post(event){
 					</div>
 				</div>
 			</div>
-			`);
+			<div id="popup2" class="overlay2">
+				<div class="popup2">
+					<h2>Edit Post</h2><br>
+					<button class="close2">&times;</button>
+					<div class="content2">
+						<form action="/feeds/edit_post/`+data.id+`/`+data.image_id+`/" method="post"  enctype="multipart/form-data" class="new-edit-post">
+						{% csrf_token %}
+							<div style="margin-right: 60px;">
+								{{feed_form.caption }}
+							</div>
+							{{ picture_form.image }}
+
+							
+							<button class="btn btn-primary btn-lg btn-block register-button" type="submit" style="width: 105px;margin-left: 465px;">Edit</button>
+						</form>
+						<div id="info-feed"></div>
+						
+					</div>
+					
+				</div>
+			</div>`);
 
 			$('#create-caption-field').val("");	
 			$('#id_image').val("");
@@ -263,6 +285,8 @@ function create_post(event){
 			$('.new-like').submit(like);
 			$('.new-likers').on('click',likers);
 			$('.new-archive_post').submit(archive_post);	
+			$('.new-get-edit-forms').submit(get_post);
+			$('.new-edit-post').submit(edit_post);
 		}
 
 	}).done();

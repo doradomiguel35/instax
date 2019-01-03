@@ -107,7 +107,7 @@ class LikeView(View):
 		try:
 			like_user = Feeds.objects.get(id=kwargs.get('feed_id')).liked.get(user_id=request.user.id)
 			account_user = Account.objects.get(user_id=self.request.user.id)
-			
+
 			if like_user.liked == True:
 				feed_data.likes-=1
 				feed_data.liker.remove(account_user)
@@ -166,7 +166,7 @@ class CreatePost(View):
 			new_post = serialize.data
 			new_post['username'] = caption.user.username
 			new_post['image'] = caption.images.image.url
-
+			new_post['image_id'] = image.id
 			try:
 				new_post['prof_pic'] = caption.user.account.prof_pic.url
 				return JsonResponse(new_post, safe=False)
@@ -216,7 +216,7 @@ class EditPost(View):
 		serialized = feed_serialize.data
 		serialized['image'] = image.image.url
 		serialized['username'] = feed.user.username
-
+		serialized['image_id'] = image.id
 		return JsonResponse(serialized,safe=False)
 
 
@@ -294,6 +294,8 @@ class ViewPost(DetailView):
 		context['search_form'] = SearchForm()
 		context['user_data'] = self.request.user
 		context['current_user'] = self.request.user
+		context['feed_form'] = FeedForm()
+		context['picture_form'] = PicturesForm()
 
 		return context
 
